@@ -22,7 +22,7 @@ class UserProfile(models.Model):
         """
         returns the Django User object associated with this profile
         """
-        NotImplementedError
+        return self.user
         
     def get_account_set(self):
         """
@@ -49,13 +49,14 @@ class OwnedModel(models.Model):
         abstract = True
     
     def __unicode__(self):
+        # this is an abstract model, so this method should be overridden later
         NotImplementedError
         
     def get_owner(self):
         """
         returns the UserProfile object of this Account's owner
         """
-        NotImplementedError
+        return self.owner
         
     def is_allowed(self, request):
         """
@@ -81,19 +82,20 @@ class NamedModel(OwnedModel):
         abstract = True
     
     def __unicode__(self):
+        # this is an abstract model, so this method should be overridden later
         NotImplementedError
         
     def get_name(self):
         """
         returns the display name of this Account
         """
-        NotImplementedError
+        return self.name
         
     def set_name(self, name):
         """
         sets the display name of this Account
         """
-        NotImplementedError
+        self.name = name
         
 class EndPolicy(NamedModel):
     """
@@ -108,9 +110,8 @@ class EndPolicy(NamedModel):
     
     description = models.TextField()
     
-    
     def __unicode__(self):
-        NotImplementedError
+        return self.get_name() + " EndPolicy class Object"
         
     def get_description(self):
         """
@@ -159,7 +160,7 @@ class Budget(NamedModel):
     period_budget_amount = models.FloatField()
     
     def __unicode__(self):
-        NotImplementedError
+        return self.get_owner().get_user().username + "'s Budget: " + self.get_name()
         
     def get_budget_period_set(self, after_date, before_date):
         """
@@ -225,7 +226,7 @@ class Category(NamedModel):
     budget = models.ForeignKey(Budget)
     
     def __unicode__(self):
-        NotImplementedError
+        return self.get_owner().get_user().username + "'s Category: " + self.get_name()
         
     def get_budget(self):
         """
@@ -246,7 +247,7 @@ class Account(NamedModel):
     """
     
     def __unicode__(self):
-        NotImplementedError
+        return self.get_owner().get_user().username + "'s Account: " + self.get_name()
         
     def get_transaction_set(self):
         """
@@ -286,7 +287,7 @@ class Transaction(NamedModel):
     category = models.ForeignKey(Category)
     
     def __unicode__(self):
-        NotImplementedError
+        return self.get_owner().get_user().username + "'s Transaction on Account " + self.account.get_name()
         
     def get_value(self):
         """
@@ -331,7 +332,7 @@ class BudgetPeriod(NamedModel):
     is_closed_out = models.BooleanField(False)
     
     def __unicode__(self):
-        NotImplementedError
+        return self.get_owner().get_user().username + "'s BudgetPeriod for Budget: " + self.get_parent_budget().get_name()
         
     def get_start_date(self):
         """
@@ -349,7 +350,7 @@ class BudgetPeriod(NamedModel):
         """
         returns the Budget object that defines the budget for which this period exists
         """
-        NotImplementedError
+        return self.parent_budget
         
     def get_remaining_balance(self):
         """
@@ -396,19 +397,19 @@ class Earmark(NamedModel):
     value = models.FloatField()
     
     def __unicode__(self):
-        NotImplementedError
+        return self.get_owner().get_user().username + "'s Earmark from Account " + self.get_account().get_name() + " for Budget " + self.get_budget_period().get_parent_budget().get_name()
         
     def get_account(self):
         """
         returns the Account object associated with this Earmark
         """
-        NotImplementedError
+        return self.account
         
     def get_budget_period(self):
         """
         returns the BudgetPeriod object associated with this Earmark
         """
-        NotImplementedError
+        return self.budget_period
         
     def set_budget_period(self, budget_period):
         """
@@ -434,7 +435,8 @@ class PeriodLength(NamedModel):
         abstract = True
     
     def __unicode__(self):
-        return self.name
+        # this is an abstract model, so this method should be overridden later
+        NotImplementedError
         
     def get_current_period_start_date(self):
         """
@@ -473,7 +475,7 @@ class Month(PeriodLength):
     """
 
     def __unicode__(self):
-        NotImplementedError
+        return self.get_owner().get_user().username + "'s Month PeriodLength"
         
     def get_current_period_start_date(self):
         """
@@ -501,7 +503,31 @@ class CarryOverAllPolicy(EndPolicy):
     """
     
     def __unicode__(self):
+        return self.get_name() + " CarryOverAllPolicy class Object"
+        
+    def calculate_budget_period_balance(self, budget_period):
+        """
+        returns the float value of the budget's remaining balance (positive or
+        negative depending on surplus or shortfall)
+        """
         NotImplementedError
+        
+    def apply_policy(self, new_budget_period):
+        """
+        performs the actions of the end policy, altering the given new
+        BudgetPolicy object such that it can be used as the next current BudgetPeriod
+        """
+        NotImplementedError
+        
+class SurplusCarryNegativePolicy(EndPolicy):
+    """
+    EndPolicy implementation.
+    
+    See the Description field for details on behaviour.
+    """
+    
+    def __unicode__(self):
+        return self.get_name() + " SurplusCarryNegativePolicy class Object"
         
     def calculate_budget_period_balance(self, budget_period):
         """
@@ -529,7 +555,7 @@ class TransactionGroup(NamedModel):
     transactions = models.ManyToManyField(Transaction)
     
     def __unicode__(self):
-        NotImplementedError
+        return self.get_owner().get_user().username + "'s TransactionGroup " + self.get_name()
         
     def get_transaction_set(self):
         """
@@ -546,30 +572,6 @@ class TransactionGroup(NamedModel):
     def remove_transaction(self, transaction):
         """
         removes the given Transaction from this group.
-        """
-        NotImplementedError
-        
-class SurplusCarryNegativePolicy(EndPolicy):
-    """
-    EndPolicy implementation.
-    
-    See the Description field for details on behaviour.
-    """
-    
-    def __unicode__(self):
-        NotImplementedError
-        
-    def calculate_budget_period_balance(self, budget_period):
-        """
-        returns the float value of the budget's remaining balance (positive or
-        negative depending on surplus or shortfall)
-        """
-        NotImplementedError
-        
-    def apply_policy(self, new_budget_period):
-        """
-        performs the actions of the end policy, altering the given new
-        BudgetPolicy object such that it can be used as the next current BudgetPeriod
         """
         NotImplementedError
         
