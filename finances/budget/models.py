@@ -45,6 +45,9 @@ class OwnedModel(models.Model):
     
     owner = models.ForeignKey(UserProfile)
     
+    class Meta:
+        abstract = True
+    
     def __unicode__(self):
         NotImplementedError
         
@@ -74,6 +77,9 @@ class NamedModel(OwnedModel):
     
     name = models.CharField(max_length=CHARFIELD_MAX_LENGTH)
     
+    class Meta:
+        abstract = True
+    
     def __unicode__(self):
         NotImplementedError
         
@@ -102,6 +108,7 @@ class EndPolicy(NamedModel):
     
     description = models.TextField()
     
+    
     def __unicode__(self):
         NotImplementedError
         
@@ -113,13 +120,15 @@ class EndPolicy(NamedModel):
         
     def calculate_budget_period_balance(self, budget_period):
         """
-        returns the float value of the budget's remaining balance (positive or negative depending on surplus or shortfall)
+        returns the float value of the budget's remaining balance (positive or
+        negative depending on surplus or shortfall)
         """
         NotImplementedError
         
     def apply_policy(self, new_budget_period):
         """
-        performs the actions of the end policy, altering the given new BudgetPolicy object such that it can be used as the next current BudgetPeriod
+        performs the actions of the end policy, altering the given new BudgetPolicy
+        object such that it can be used as the next current BudgetPeriod
         """
         NotImplementedError
         
@@ -164,8 +173,11 @@ class Budget(NamedModel):
         
     def get_end_policy(self):
         """
-        returns the EndPolicy obejct of this Budget
+        returns the EndPolicy object of this Budget
         """
+        # remember on implementation that the subclass of EndPolicy object must be
+        # returned for Duck Typing. The EndPolicy object cannot be an abstract class
+        # but we'll access it through EndPolicy, get the subclass, and then return that. 
         NotImplementedError
         
     def get_period_length(self):
@@ -409,6 +421,9 @@ class PeriodLength(NamedModel):
     the same number of days, and years can be leap years, etc., this class exists
     to help in determining the length of a period.
     """
+    
+    class Meta:
+        abstract = True
     
     def __unicode__(self):
         NotImplementedError
