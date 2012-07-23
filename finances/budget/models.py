@@ -16,7 +16,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
     
     def __unicode__(self):
-        NotImplementedError
+        return self.user.username + "'s Profile"
         
     def get_user(self):
         """
@@ -122,6 +122,10 @@ class EndPolicy(NamedModel):
         """
         returns the float value of the budget's remaining balance (positive or
         negative depending on surplus or shortfall)
+        
+        This is an abstract method. It always throws a NotImplementedError
+        as subclasses should implement the method and then Duck Typing can
+        be used.
         """
         NotImplementedError
         
@@ -129,6 +133,10 @@ class EndPolicy(NamedModel):
         """
         performs the actions of the end policy, altering the given new BudgetPolicy
         object such that it can be used as the next current BudgetPeriod
+        
+        This is an abstract method. It always throws a NotImplementedError
+        as subclasses should implement the method and then Duck Typing can
+        be used.
         """
         NotImplementedError
         
@@ -426,23 +434,35 @@ class PeriodLength(NamedModel):
         abstract = True
     
     def __unicode__(self):
-        NotImplementedError
+        return self.name
         
     def get_current_period_start_date(self):
         """
         returns the start date of the current period
+        
+        This is an abstract method. It always throws a NotImplementedError
+        as subclasses should implement the method and then Duck Typing can
+        be used.
         """
         NotImplementedError
         
     def get_current_period_end_date(self):
         """
         returns the end date of the current period (inclusive)
+        
+        This is an abstract method. It always throws a NotImplementedError
+        as subclasses should implement the method and then Duck Typing can
+        be used.
         """
         NotImplementedError
         
     def in_current_period(self, date_time):
         """
         returns True if the given date_time is in the current period, otherwise returns False
+        
+        This is an abstract method. It always throws a NotImplementedError
+        as subclasses should implement the method and then Duck Typing can
+        be used.
         """
         NotImplementedError
         
