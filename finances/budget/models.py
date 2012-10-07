@@ -1,577 +1,462 @@
+#Copyright (C) 2012  Aaron Krebs akrebs@ualberta.ca
+#
+#This program is free software: you can redistribute it and/or modify
+#it under the terms of the GNU General Public License as published by
+#the Free Software Foundation, either version 3 of the License, or
+#(at your option) any later version.
+#
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+#
+#You should have received a copy of the GNU General Public License
+#along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 from django.db import models
 from django.contrib.auth.models import User
 
 CHARFIELD_MAX_LENGTH = 200
 
 class UserProfile(models.Model):
-    """
+    '''
     This class is set up as the Django user profile model;
     see the documentation on Authentication for more information:
     django-docs-1.4-en/topics/auth.html#storing-additional-information-about-users
     
     This class exists to associate a user with their accounts and
     budget policies within the app, and store additional information to Django's User
-    """
+    '''
     
-    user = models.OneToOneField(User)
+    _user = models.OneToOneField(User)
+    
+    def __init__(self, user):
+        self.user = user
     
     def __unicode__(self):
         return self.user.username + "'s Profile"
-        
-    def get_user(self):
+    
+    @property
+    def user(self):
         """
         returns the Django User object associated with this profile
         """
-        return self.user
-        
-    def get_account_set(self):
-        """
-        returns the set of accounts associated with this user profile
-        """
-        NotImplementedError
-        
-    def get_budget_set(self):
-        """
-        returns the set of Budget objects assocaited with this user profile
-        """
-        NotImplementedError
-        
+        return self._user
+
 class OwnedModel(models.Model):
-    """
+    '''
     Abstract class to move owner attribute into a common parent class.
     
     Owner should be set at instantiation, and not be changed afterward.
-    """
+    '''
     
-    owner = models.ForeignKey(UserProfile)
+    _owner = models.ForeignKey(UserProfile)
     
     class Meta:
         abstract = True
     
-    def __unicode__(self):
+    def __init__(self, owner):
+        self._owner = owner 
+    
+    def __unicode__(self) :
         # this is an abstract model, so this method should be overridden later
         NotImplementedError
-        
-    def get_owner(self):
+    
+    def owner(self):
         """
         returns the UserProfile object of this Account's owner
         """
-        return self.owner
-        
+        return self._owner 
+    
     def is_allowed(self, request):
         """
         returns True if the given request can be processed
         """
-        NotImplementedError
-        
+        raise NotImplementedError()
+    
     def assert_is_allowed(self, request):
         """
         raises a PermissionDenied exception if the requesting user is not
         permitted to perform the action
         """
-        NotImplementedError
-        
-class NamedModel(OwnedModel):
-    """
+        raise NotImplementedError()
+
+class NamedModel(models.Model):
+    '''
     Abstract class to move name attribute into a common parent class.
-    """
+    '''
     
-    name = models.CharField(max_length=CHARFIELD_MAX_LENGTH)
-    
-    class Meta:
-        abstract = True
+    _name = models.CharField(max_length=CHARFIELD_MAX_LENGTH)
     
     def __unicode__(self):
         # this is an abstract model, so this method should be overridden later
-        NotImplementedError
-        
-    def get_name(self):
+        raise NotImplementedError()
+    
+    @property
+    def name(self):
         """
         returns the display name of this Account
         """
-        return self.name
-        
-    def set_name(self, name):
+        return self._name
+    
+    @property.setter()
+    def name(self, name):
         """
         sets the display name of this Account
         """
-        self.name = name
-        
-class EndPolicy(NamedModel):
-    """
-    Abstract class for encapsulating Budget behaviour. A subclass of EndPolicy
-    will implement specifically what actions are taken with a BudgetPeriod's
-    Earmark objects when the BudgetPeriod ends.
-    
-    For example, a subclass of EndPolicy might implement that at the end of a
-    BudgetPeriod all Earmark surpluses are carried over to the next BudgetPeriod
-    object, and that any shortfalls are also carried to the next BudgetPeriod
-    """
-    
-    description = models.TextField()
-    
-    def __unicode__(self):
-        return self.get_name() + " EndPolicy class Object"
-        
-    def get_description(self):
-        """
-        returns the user-facing description of the behaviour of this EndPolicy
-        """
-        NotImplementedError
-        
-    def calculate_budget_period_balance(self, budget_period):
-        """
-        returns the float value of the budget's remaining balance (positive or
-        negative depending on surplus or shortfall)
-        
-        This is an abstract method. It always throws a NotImplementedError
-        as subclasses should implement the method and then Duck Typing can
-        be used.
-        """
-        NotImplementedError
-        
-    def apply_policy(self, new_budget_period):
-        """
-        performs the actions of the end policy, altering the given new BudgetPolicy
-        object such that it can be used as the next current BudgetPeriod
-        
-        This is an abstract method. It always throws a NotImplementedError
-        as subclasses should implement the method and then Duck Typing can
-        be used.
-        """
-        NotImplementedError
-        
-class Budget(NamedModel):
-    """
+        self._name = name
+
+class Budget(NamedModel, OwnedModel):
+    '''
     A Budget represents an overall behaviour of a budget. It contains
-    information on a budget's period, the behaviour with leftover surpluses or
-    shortfalls at the end of the budget period, and the amount budgeted per period.
+    information on a budget's period, and the amount budgeted per period.
     
-    Category objects are associated with a Budget so that Transaction objects
+    Category objects are associated with a Budget so that RealTxn objects
     with said Category are counted against the budget.
+    '''
     
-    For example: a Budget may define a budget that calls for $200 per
-    budget period, with a budget period being one month, with surpluses
-    rolling over to the next month's budget balance and shortfalls coming out
-    of the next month's balance.
-    """
-    
-    end_policy = models.OneToOneField(EndPolicy)
-    period_budget_amount = models.FloatField()
+    _period_budget_amount = models.FloatField()
     
     def __unicode__(self):
-        return self.get_owner().get_user().username + "'s Budget: " + self.get_name()
+        return self.owner.user.username + "'s Budget: " + self.name
         
-    def get_budget_period_set(self, after_date, before_date):
+    def current_account(self):
         """
-        returns the set of BudgetPeriod objects associated with this Budget.
+        Returns the VirtualAcct that should be used for this budget in the
+        current period. Uses the @property decorator.
         """
-        NotImplementedError
-        
-    def get_current_budget_period(self):
-        """
-        returns the current BudgetPeriod object for this budget
-        """
-        NotImplementedError
-        
-    def set_current_budget_period(self, budget_period):
-        """
-        sets the current BudgetPeriod for this budget
-        """
-        NotImplementedError
-        
-    def get_end_policy(self):
-        """
-        returns the EndPolicy object of this Budget
-        """
-        # remember on implementation that the subclass of EndPolicy object must be
-        # returned for Duck Typing. The EndPolicy object cannot be an abstract class
-        # but we'll access it through EndPolicy, get the subclass, and then return that. 
-        NotImplementedError
-        
+        raise NotImplementedError()
+    
     def get_period_length(self):
         """
         returns the PeriodLength object that determines the period length for this budget
         """
-        NotImplementedError
-        
-    def get_period_budget_amount(self):
+        raise NotImplementedError()
+    
+    @property
+    def period_budget_amount(self):
         """
-        returns the float value of the amount that is to be budgeted for each budget period
+        Returns the float value of the amount that is to be budgeted for each
+        budget period. Uses the @property decorator.
         """
-        NotImplementedError
-        
-    def set_period_budget_amount(self, float_amount):
+        return self._period_budget_amount
+    
+    @property.setter()
+    def period_budget_amount(self, float_amount):
         """
-        sets the float value of the amount that is to be budgeted for each budget period
+        Sets the float value of the amount that is to be budgeted for each
+        budget period. Uses the @property decorator.
         """
-        NotImplementedError
-        
-    def process_budget_period(self, new_budget_period):
-        """
-        checks if the current budget period is still supposed to be active.
-        If yes, then nothing is done and the function returns False. If the
-        current Budget Period should be over, it is closed out and a new BudgetPeriod
-        object is created and made current.
-        """
-        NotImplementedError
-        
-class Category(NamedModel):
-    """
+        self._period_budget_amount = float_amount
+
+class Category(NamedModel, OwnedModel):
+    '''
     The Category class defines types of Transactions. Categories can be
     associated with one Budget object such that Transactions with said Category
     count against that Budget.
-    """
+    '''
     
-    budget = models.ForeignKey(Budget)
+    _budget = models.ForeignKey(Budget)
     
-    def __unicode__(self):
-        return self.get_owner().get_user().username + "'s Category: " + self.get_name()
-        
-    def get_budget(self):
+    def __unicode__ (self) :
+        return self.owner.user.username + "'s Category: " + self.name
+    
+    @property
+    def budget (self) :
         """
         returns the Budget object that this Category is under.
         """
-        NotImplementedError
-        
-    def set_budget(self, budget):
+        return self._budget
+    
+    @property.setter()
+    def budget (self, budget) :
         """
         sets the Budget object that this Category is under.
-        """ 
-        NotImplementedError
-        
-class Account(NamedModel):
-    """
-    An Account object mirrors a bank account. It has a balance which is determined
-    by the Transactions (debits, credits, transfers, etc) made against that Account.
-    """
+        """
+        self._budget = budget
+
+class RealAcct(OwnedModel, NamedModel):
+    '''
+    Represents a real-world bank account. RealTxn class objects can be listed
+    against such an account. Furthermore, VirtualAcct class objects can be
+    associated with this account so that they are included in the account balance
+    '''
     
     def __unicode__(self):
-        return self.get_owner().get_user().username + "'s Account: " + self.get_name()
-        
-    def get_transaction_set(self):
+        return self.owner.user.username + "'s RealAcct " + self.name
+    
+    @property
+    def balance(self):
         """
-        returns the set of all Transaction objects associated with this Account
+        Returns the balance of this account. The account balance is an
+        aggregate of all the VirtualAccts associated with this RealAcct
         """
-        NotImplementedError
-        
-    def get_balance(self):
+        raise NotImplementedError()
+
+class VirtualAcct(OwnedModel, NamedModel):
+    '''
+    Represents a sub-division of a real account (RealAcct). Is associated with
+    a RealAcct class object to represent a portion of that account's aggregate balance.
+    '''
+    
+    _parent_budget = models.ForeignKey(Budget)
+    
+    def __init__(self, parent_budget):
+        self._parent_budget = parent_budget
+    
+    def __unicode__(self):
+        return self.owner.user.username + "'s VirtualAcct " + self.name
+    
+    @property
+    def parent_budget(self):
         """
-        returns a Float representing the calculated balance of this Account
+        Returns the budget object with which this virtual account is associated.
+        Uses the @property decorator.
         """
-        NotImplementedError
-        
-    def create_earmark(self, budget_period, earmark, amount):
+        return self._parent_budget
+    
+    @property
+    def balance(self):
         """
-        populates the given earmark object with the amount given. 
-        Returns False if the balance is not available in the account to be earmarked
-        """ 
-        NotImplementedError
-        
-    def get_free_balance(self):
+        Calculates the balance of this account from the VirtualTxn objects
+        associated with it. Uses  the @property decorator.
         """
-        returns the float value of the money avaibale in the account that has not been earmarked
-        """
-        NotImplementedError
-        
-class Transaction(NamedModel):
-    """
-    This class represents a transaction on an account.
+        raise NotImplementedError()
+
+class VirtualTxn(OwnedModel):
+    '''
+    This class represents a transaction on an a virtual account.
     
     Credit values (money into account) are given as positive; Debit values
     (money removed from account) as negative.
-    """
+    '''
     
-    account = models.ForeignKey(Account)
-    value = models.FloatField()
-    category = models.ForeignKey(Category)
+    _account = models.Foreignkey(VirtualAcct)
+    _value = models.FloatField
+    _real_txn = models.Foreignkey(RealTxn)
     
-    def __unicode__(self):
-        return self.get_owner().get_user().username + "'s Transaction on Account " + self.account.get_name()
-        
-    def get_value(self):
-        """
-        returns the value of the transaction.
-        Credit values (money into account) are given as positive; Debit values
-        (money removed from account) as negative.
-        """
-        NotImplementedError
-        
-    def get_category(self):
-        """
-        returns the Category object associated with the Transaction
-        """
-        NotImplementedError
-        
-    def set_category(self, category):
-        """
-        sets the Category this transaction is associated with
-        """
-        NotImplementedError
-        
-    def get_account(self):
-        """
-        returns the Account object this transaction is counted against
-        """
-        NotImplementedError
-        
-class BudgetPeriod(NamedModel):
-    """
-    A Budget Period object is instantiated for each period as defined by the
-    parent Budget object. This class contains actual start and end dates (the
-    Budget object only has the period length, and thus a new BudgetPeriod is
-    made for each period), and can be associated with Earmark obejcts to track
-    portions of account balances that are appropriated for a budget period.
-    
-    Start and end dates are inclusive.
-    """
-    
-    start_date = models.DateTimeField()
-    end_date = models.DateTimeField()
-    parent_budget = models.ForeignKey(Budget)
-    is_closed_out = models.BooleanField(False)
+    def __init__(self, account, real_txn):
+        self._account = account
+        self._real_txn = real_txn
     
     def __unicode__(self):
-        return self.get_owner().get_user().username + "'s BudgetPeriod for Budget: " + self.get_parent_budget().get_name()
-        
-    def get_start_date(self):
-        """
-        returns the start date of the budget period as a DateTime object
-        """
-        NotImplementedError
-        
-    def get_end_date(self):
-        """
-        returns the end date of the budget period as a DateTime object
-        """
-        NotImplementedError
-        
-    def get_parent_budget(self):
-        """
-        returns the Budget object that defines the budget for which this period exists
-        """
-        return self.parent_budget
-        
-    def get_remaining_balance(self):
-        """
-        returns the balance remaining in the budget. This value is calculated
-        from Earmarks associated with this BudgetPeriod and Transactions that are
-        related to this BudgetPeriod vie Categories associated with the parent Budget object
-        """
-        NotImplementedError
-        
-    def get_earmark_set(self):
-        """
-        returns the set of Earmark objects associated with this BudgetPeriod
-        """
-        NotImplementedError
-        
-    def close_out(self, new_budget_period):
-        """
-        closes out this BudgetPeriod. The parent Budget EndPolicy is processed
-        and this BudgetPeriod is marked as closed.
-        """
-        NotImplementedError
-        
-    def is_closed_out(self):
-        """
-        returns True if the BudgetPeriod has been processed and closed out,
-        returns False if the BudgetPeriod is still active
-        """
-        NotImplementedError
-        
-class Earmark(NamedModel):
-    """
-    An Earmark object represents a sum of money (from an Account) that has been
-    earmarked for a budget (specifically, a BudgetPeriod).
+        return self.owner.user.username + "'s VirtualTxn " + self.name
     
-    The Earmark can be moved from one BudgetPeriod to another by changing the
-    associated BudgetPeriod. It cannot be moved from one Account to another
-    (since the money physically resides in that account, generally); move money
-    to another account first (with a Transaction) and then make a new Earmark
-    object if you wish to earmark money from a different account.
-    """
+    @property
+    def value(self):
+        """
+        Returns the value of the transaction.
+        
+        Credit values (money into account) are given as positive; Debit
+        values (money removed from account) as negative.
+        
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
     
-    account = models.ForeignKey(Account)
-    budget_period = models.ForeignKey(BudgetPeriod)
-    value = models.FloatField()
+    @property.setter()
+    def value(self, float):
+        """
+        Sets the value of the transaction.
+        
+        Credit values (money into account) are given as positive; Debit
+        values (money removed from account) as negative.
+        
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @property
+    def account(self):
+        """
+        Returns the Account object this transaction is counted against.
+        
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @property
+    def real_txn(self):
+        """
+        Returns the RealTxn object associated with this transaction. Uses
+        the @property decorator.
+        """
+        raise NotImplementedError()
+
+class RealTxn(OwnedModel):
+    '''
+    This class represents a transaction on an a real account.
+    
+    Credit values (money into account) are given as positive; Debit values
+    (money removed from account) as negative.
+    '''
+    
+    _account = models.ForeignKey(RealAcct)
+    _value = models.FloatField()
+    _category = models.ForeignKey(Category)
+    
+    def __init__(self, account):
+        self._account = account
     
     def __unicode__(self):
-        return self.get_owner().get_user().username + "'s Earmark from Account " + self.get_account().get_name() + " for Budget " + self.get_budget_period().get_parent_budget().get_name()
+        return self.owner.username.name + "'s RealTxn " + self.name
+    
+    @property
+    def value(self):
+        """
+        Returns the value of the transaction.
         
-    def get_account(self):
-        """
-        returns the Account object associated with this Earmark
-        """
-        return self.account
+        Credit values (money into account) are given as positive; Debit
+        values (money removed from account) as negative.
         
-    def get_budget_period(self):
+        Uses the @property decorator.
         """
-        returns the BudgetPeriod object associated with this Earmark
+        raise NotImplementedError()
+    
+    @property.setter()
+    def value(self, float):
         """
-        return self.budget_period
+        Sets the value of the transaction.
         
-    def set_budget_period(self, budget_period):
-        """
-        sets the BudgetPeriod object with which this Earmark is associated.
-        This clears the previous association, if any.
-        """
-        NotImplementedError
+        Credit values (money into account) are given as positive; Debit
+        values (money removed from account) as negative.
         
-    def get_value(self):
+        Uses the @property decorator.
         """
-        returns the amount of money earmarked.
+        raise NotImplementedError()
+    
+    @property
+    def category(self):
         """
-        NotImplementedError
+        Returns the Category object associated with the Transaction.
         
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @property.setter()
+    def category(self, category):
+        """
+        Sets the Category this transaction is associated with.
+        
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @property
+    def account(self):
+        """
+        Returns the Account object this transaction is counted against.
+        
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+
 class PeriodLength(NamedModel):
-    """
-    Abstract class that determines a period length. Since months are not always
-    the same number of days, and years can be leap years, etc., this class exists
-    to help in determining the length of a period.
-    """
+    '''
+    Abstract class that determines a period length. Since months are not
+    always the same number of days, and years can be leap years, etc., this
+    class exists to help in determining the length of a period.
+    '''
     
     class Meta:
         abstract = True
     
     def __unicode__(self):
-        # this is an abstract model, so this method should be overridden later
-        NotImplementedError
-        
-    def get_current_period_start_date(self):
+        # This is an abstract class, so this method should be implemented in subclasses
+        raise NotImplementedError()
+    
+    @property
+    def current_period_start_date(self):
         """
-        returns the start date of the current period
+        Returns the start date of the current period. Uses the @property decorator.
         
         This is an abstract method. It always throws a NotImplementedError
         as subclasses should implement the method and then Duck Typing can
         be used.
         """
-        NotImplementedError
         
-    def get_current_period_end_date(self):
+        raise NotImplementedError()
+    
+    @property
+    def current_period_end_date(self):
         """
-        returns the end date of the current period (inclusive)
+        Returns the end date of the current period (inclusive). Uses the @property decorator.
         
         This is an abstract method. It always throws a NotImplementedError
         as subclasses should implement the method and then Duck Typing can
         be used.
         """
-        NotImplementedError
-        
+        raise NotImplementedError()
+    
     def in_current_period(self, date_time):
         """
-        returns True if the given date_time is in the current period, otherwise returns False
+        Returns True if the given date_time is in the current period, otherwise returns False
         
         This is an abstract method. It always throws a NotImplementedError
         as subclasses should implement the method and then Duck Typing can
         be used.
         """
-        NotImplementedError
-        
+        raise NotImplementedError()
+
 class Month(PeriodLength):
-    """
+    '''
     Represents a one month period length (eg, a budget would have this period
     length if the money for that budget is allocated monthly).
-    """
-
+    '''
+    
     def __unicode__(self):
-        return self.get_owner().get_user().username + "'s Month PeriodLength"
-        
-    def get_current_period_start_date(self):
+        return "Month PeriodLength"
+    
+    @property
+    def current_period_start_date(self):
         """
-        returns the start date of the current period
+        Returns the start date of the current period.
+        Uses the @property decorator.
         """
-        NotImplementedError
-        
-    def get_current_period_end_date(self):
+        raise NotImplementedError()
+    
+    @property
+    def current_period_end_date(self):
         """
-        returns the end date of the current period (inclusive)
+        Returns the end date of the current period (inclusive).
+        Uses the @property decorator.
         """
-        NotImplementedError
-        
+        raise NotImplementedError()
+    
     def in_current_period(self, date_time):
         """
-        returns True if the given date_time is in the current period, otherwise returns False
+        Returns True if the given date_time is in the current period, otherwise returns False
         """
-        NotImplementedError
-        
-class CarryOverAllPolicy(EndPolicy):
-    """
-    EndPolicy implementation.
-    
-    See the Description field for details on behaviour.
-    """
-    
-    def __unicode__(self):
-        return self.get_name() + " CarryOverAllPolicy class Object"
-        
-    def calculate_budget_period_balance(self, budget_period):
-        """
-        returns the float value of the budget's remaining balance (positive or
-        negative depending on surplus or shortfall)
-        """
-        NotImplementedError
-        
-    def apply_policy(self, new_budget_period):
-        """
-        performs the actions of the end policy, altering the given new
-        BudgetPolicy object such that it can be used as the next current BudgetPeriod
-        """
-        NotImplementedError
-        
-class SurplusCarryNegativePolicy(EndPolicy):
-    """
-    EndPolicy implementation.
-    
-    See the Description field for details on behaviour.
-    """
+        raise NotImplementedError()
+
+class Year (PeriodLength) :
+    '''
+    Represents a one year period length (eg, a budget would have this period
+    length if the money for that budget is allocated yearly).
+    '''
     
     def __unicode__(self):
-        return self.get_name() + " SurplusCarryNegativePolicy class Object"
-        
-    def calculate_budget_period_balance(self, budget_period):
-        """
-        returns the float value of the budget's remaining balance (positive or
-        negative depending on surplus or shortfall)
-        """
-        NotImplementedError
-        
-    def apply_policy(self, new_budget_period):
-        """
-        performs the actions of the end policy, altering the given new
-        BudgetPolicy object such that it can be used as the next current BudgetPeriod
-        """
-        NotImplementedError
-        
-class TransactionGroup(NamedModel):
-    """
-    A TransactionGroup is a group of Transaction objects. This is used when
-    sets of Transactions need to be grouped together for reference.
+        return "Year PeriodLength"
     
-    For example, a series of transactions all to do with a camping trip might
-    be group together in a TransactionGroup so that they can be accessed together later.
-    """
+    @property
+    def current_period_start_date(self):
+        """
+        Returns the start date of the current period.
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
     
-    transactions = models.ManyToManyField(Transaction)
+    @property
+    def current_period_end_date (self) :
+        """
+        Returns the end date of the current period (inclusive).
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
     
-    def __unicode__(self):
-        return self.get_owner().get_user().username + "'s TransactionGroup " + self.get_name()
-        
-    def get_transaction_set(self):
+    def in_current_period (self, date_time) :
         """
-        returns the set of all transactions in this group
-        """
-        NotImplementedError
-        
-    def add_transaction(self, transaction):
-        """
-        adds the given Transaction t this group
-        """
-        NotImplementedError
-        
-    def remove_transaction(self, transaction):
-        """
-        removes the given Transaction from this group.
-        """
-        NotImplementedError
-        
+        Returns True if the given date_time is in the current period, otherwise returns False
+        """ 
+        raise NotImplementedError()
