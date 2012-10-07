@@ -88,6 +88,9 @@ class NamedModel(models.Model):
     
     _name = models.CharField(max_length=CHARFIELD_MAX_LENGTH)
     
+    class Meta:
+        abstract = True
+    
     def __unicode__(self):
         # this is an abstract model, so this method should be overridden later
         raise NotImplementedError()
@@ -99,7 +102,7 @@ class NamedModel(models.Model):
         """
         return self._name
     
-    @property.setter()
+    @name.setter
     def name(self, name):
         """
         sets the display name of this Account
@@ -141,7 +144,7 @@ class Budget(NamedModel, OwnedModel):
         """
         return self._period_budget_amount
     
-    @property.setter()
+    @period_budget_amount.setter
     def period_budget_amount(self, float_amount):
         """
         Sets the float value of the amount that is to be budgeted for each
@@ -168,7 +171,7 @@ class Category(NamedModel, OwnedModel):
         """
         return self._budget
     
-    @property.setter()
+    @budget.setter
     def budget (self, budget) :
         """
         sets the Budget object that this Category is under.
@@ -223,66 +226,6 @@ class VirtualAcct(OwnedModel, NamedModel):
         """
         raise NotImplementedError()
 
-class VirtualTxn(OwnedModel):
-    '''
-    This class represents a transaction on an a virtual account.
-    
-    Credit values (money into account) are given as positive; Debit values
-    (money removed from account) as negative.
-    '''
-    
-    _account = models.Foreignkey(VirtualAcct)
-    _value = models.FloatField
-    _real_txn = models.Foreignkey(RealTxn)
-    
-    def __init__(self, account, real_txn):
-        self._account = account
-        self._real_txn = real_txn
-    
-    def __unicode__(self):
-        return self.owner.user.username + "'s VirtualTxn " + self.name
-    
-    @property
-    def value(self):
-        """
-        Returns the value of the transaction.
-        
-        Credit values (money into account) are given as positive; Debit
-        values (money removed from account) as negative.
-        
-        Uses the @property decorator.
-        """
-        raise NotImplementedError()
-    
-    @property.setter()
-    def value(self, float):
-        """
-        Sets the value of the transaction.
-        
-        Credit values (money into account) are given as positive; Debit
-        values (money removed from account) as negative.
-        
-        Uses the @property decorator.
-        """
-        raise NotImplementedError()
-    
-    @property
-    def account(self):
-        """
-        Returns the Account object this transaction is counted against.
-        
-        Uses the @property decorator.
-        """
-        raise NotImplementedError()
-    
-    @property
-    def real_txn(self):
-        """
-        Returns the RealTxn object associated with this transaction. Uses
-        the @property decorator.
-        """
-        raise NotImplementedError()
-
 class RealTxn(OwnedModel):
     '''
     This class represents a transaction on an a real account.
@@ -313,7 +256,7 @@ class RealTxn(OwnedModel):
         """
         raise NotImplementedError()
     
-    @property.setter()
+    @value.setter
     def value(self, float):
         """
         Sets the value of the transaction.
@@ -334,7 +277,7 @@ class RealTxn(OwnedModel):
         """
         raise NotImplementedError()
     
-    @property.setter()
+    @category.setter
     def category(self, category):
         """
         Sets the Category this transaction is associated with.
@@ -349,6 +292,66 @@ class RealTxn(OwnedModel):
         Returns the Account object this transaction is counted against.
         
         Uses the @property decorator.
+        """
+        raise NotImplementedError()
+
+class VirtualTxn(OwnedModel):
+    '''
+    This class represents a transaction on an a virtual account.
+    
+    Credit values (money into account) are given as positive; Debit values
+    (money removed from account) as negative.
+    '''
+    
+    _account = models.ForeignKey(VirtualAcct)
+    _value = models.FloatField()
+    _real_txn = models.ForeignKey(RealTxn)
+    
+    def __init__(self, account, real_txn):
+        self._account = account
+        self._real_txn = real_txn
+    
+    def __unicode__(self):
+        return self.owner.user.username + "'s VirtualTxn " + self.name
+    
+    @property
+    def value(self):
+        """
+        Returns the value of the transaction.
+        
+        Credit values (money into account) are given as positive; Debit
+        values (money removed from account) as negative.
+        
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @value.setter
+    def value(self, float):
+        """
+        Sets the value of the transaction.
+        
+        Credit values (money into account) are given as positive; Debit
+        values (money removed from account) as negative.
+        
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @property
+    def account(self):
+        """
+        Returns the Account object this transaction is counted against.
+        
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @property
+    def real_txn(self):
+        """
+        Returns the RealTxn object associated with this transaction. Uses
+        the @property decorator.
         """
         raise NotImplementedError()
 
@@ -430,7 +433,7 @@ class Month(PeriodLength):
         """
         raise NotImplementedError()
 
-class Year (PeriodLength) :
+class Year(PeriodLength):
     '''
     Represents a one year period length (eg, a budget would have this period
     length if the money for that budget is allocated yearly).

@@ -2,28 +2,22 @@ from django.contrib import admin
 
 from budget.models import (
             UserProfile,
-            EndPolicy,
             Budget,
             Category,
-            Account,
-            Transaction,
-            BudgetPeriod,
-            Earmark,
+            RealAcct,
+            VirtualAcct,
+            RealTxn,
+            VirtualTxn,
             Month,
-            CarryOverAllPolicy,
-            SurplusCarryNegativePolicy,
-            TransactionGroup,
+            Year,
             )
 
 admin.site.register(UserProfile)
-admin.site.register(EndPolicy)
 admin.site.register(Budget)
 admin.site.register(Category)
-admin.site.register(Account)
-admin.site.register(Transaction)
-admin.site.register(BudgetPeriod)
-admin.site.register(Earmark)
+admin.site.register(RealAcct)
+admin.site.register(VirtualAcct)
+admin.site.register(RealTxn)
+admin.site.register(VirtualTxn)
 admin.site.register(Month)
-admin.site.register(CarryOverAllPolicy)
-admin.site.register(SurplusCarryNegativePolicy)
-admin.site.register(TransactionGroup)
+admin.site.register(Year)
