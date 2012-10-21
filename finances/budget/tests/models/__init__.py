@@ -1,0 +1,2 @@
+from owned_model import OwnedModelTests
+from user_profile import UserProfileTests
