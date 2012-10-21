@@ -47,4 +47,10 @@ class OwnedModelTests(TestCase):
         assert(False)
         
     def test_is_allowed(self):
-        pass
+        factory = RequestFactory()
+        request = factory.get('/')
+        
+        assert(self.instance.is_allowed(request) == False)
+        request.user = self.profile
+        assert(self.instance.is_allowed(request) == True)
+        self.instance.assert_is_allowed(request)
