@@ -15,23 +15,21 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import FieldError
 
 CHARFIELD_MAX_LENGTH = 200
 
 class UserProfile(models.Model):
-    '''
+    """
     This class is set up as the Django user profile model;
     see the documentation on Authentication for more information:
     django-docs-1.4-en/topics/auth.html#storing-additional-information-about-users
     
     This class exists to associate a user with their accounts and
     budget policies within the app, and store additional information to Django's User
-    '''
+    """
     
     _user = models.OneToOneField(User)
-    
-    def __init__(self, user):
-        self.user = user
     
     def __unicode__(self):
         return self.user.username + "'s Profile"
@@ -39,52 +37,74 @@ class UserProfile(models.Model):
     @property
     def user(self):
         """
-        returns the Django User object associated with this profile
+        Returns the Django User object associated with this profile.
         """
         return self._user
+    
+    @user.setter
+    def user(self, user):
+        """
+        Raises a FieldError if this object's user is already set.
+        """
+        # try to fetch _user, if it doesn't exist we can set it
+        try:
+            if self._user:
+                raise FieldError('user is already set and cannot be set again')
+        except User.DoesNotExist:
+            self._user = user
 
 class OwnedModel(models.Model):
-    '''
+    """
     Abstract class to move owner attribute into a common parent class.
     
     Owner should be set at instantiation, and not be changed afterward.
-    '''
+    """
     
     _owner = models.ForeignKey(UserProfile)
     
     class Meta:
         abstract = True
     
-    def __init__(self, owner):
-        self._owner = owner 
-    
     def __unicode__(self) :
         # this is an abstract model, so this method should be overridden later
-        NotImplementedError
+        raise NotImplementedError()
     
+    @property
     def owner(self):
         """
-        returns the UserProfile object of this Account's owner
+        Returns the UserProfile object of this Account's owner.
         """
         return self._owner 
     
+    @owner.setter
+    def owner(self, owner):
+        """
+        Raises a FieldError if this object's owner is already set.
+        """
+        # try to fetch _owner, if it doesn't exist we can set it
+        try:
+            if self._owner:
+                raise FieldError('owner is already set and cannot be set again')
+        except UserProfile.DoesNotExist:
+            self._owner = owner
+    
     def is_allowed(self, request):
         """
-        returns True if the given request can be processed
+        Returns True if the given request can be processed.
         """
         raise NotImplementedError()
     
     def assert_is_allowed(self, request):
         """
-        raises a PermissionDenied exception if the requesting user is not
-        permitted to perform the action
+        Raises a PermissionDenied exception if the requesting user is not
+        permitted to perform the action.
         """
         raise NotImplementedError()
 
 class NamedModel(models.Model):
-    '''
+    """
     Abstract class to move name attribute into a common parent class.
-    '''
+    """
     
     _name = models.CharField(max_length=CHARFIELD_MAX_LENGTH)
     
@@ -110,13 +130,13 @@ class NamedModel(models.Model):
         self._name = name
 
 class Budget(NamedModel, OwnedModel):
-    '''
+    """
     A Budget represents an overall behaviour of a budget. It contains
     information on a budget's period, and the amount budgeted per period.
     
     Category objects are associated with a Budget so that RealTxn objects
     with said Category are counted against the budget.
-    '''
+    """
     
     _period_budget_amount = models.FloatField()
     
@@ -153,11 +173,11 @@ class Budget(NamedModel, OwnedModel):
         self._period_budget_amount = float_amount
 
 class Category(NamedModel, OwnedModel):
-    '''
+    """
     The Category class defines types of Transactions. Categories can be
     associated with one Budget object such that Transactions with said Category
     count against that Budget.
-    '''
+    """
     
     _budget = models.ForeignKey(Budget)
     
@@ -179,11 +199,11 @@ class Category(NamedModel, OwnedModel):
         self._budget = budget
 
 class RealAcct(OwnedModel, NamedModel):
-    '''
+    """
     Represents a real-world bank account. RealTxn class objects can be listed
     against such an account. Furthermore, VirtualAcct class objects can be
     associated with this account so that they are included in the account balance
-    '''
+    """
     
     def __unicode__(self):
         return self.owner.user.username + "'s RealAcct " + self.name
@@ -197,10 +217,10 @@ class RealAcct(OwnedModel, NamedModel):
         raise NotImplementedError()
 
 class VirtualAcct(OwnedModel, NamedModel):
-    '''
+    """
     Represents a sub-division of a real account (RealAcct). Is associated with
     a RealAcct class object to represent a portion of that account's aggregate balance.
-    '''
+    """
     
     _parent_budget = models.ForeignKey(Budget)
     
@@ -227,12 +247,12 @@ class VirtualAcct(OwnedModel, NamedModel):
         raise NotImplementedError()
 
 class RealTxn(OwnedModel):
-    '''
+    """
     This class represents a transaction on an a real account.
     
     Credit values (money into account) are given as positive; Debit values
     (money removed from account) as negative.
-    '''
+    """
     
     _account = models.ForeignKey(RealAcct)
     _value = models.FloatField()
@@ -296,12 +316,12 @@ class RealTxn(OwnedModel):
         raise NotImplementedError()
 
 class VirtualTxn(OwnedModel):
-    '''
+    """
     This class represents a transaction on an a virtual account.
     
     Credit values (money into account) are given as positive; Debit values
     (money removed from account) as negative.
-    '''
+    """
     
     _account = models.ForeignKey(VirtualAcct)
     _value = models.FloatField()
@@ -356,11 +376,11 @@ class VirtualTxn(OwnedModel):
         raise NotImplementedError()
 
 class PeriodLength(NamedModel):
-    '''
+    """
     Abstract class that determines a period length. Since months are not
     always the same number of days, and years can be leap years, etc., this
     class exists to help in determining the length of a period.
-    '''
+    """
     
     class Meta:
         abstract = True
@@ -403,10 +423,10 @@ class PeriodLength(NamedModel):
         raise NotImplementedError()
 
 class Month(PeriodLength):
-    '''
+    """
     Represents a one month period length (eg, a budget would have this period
     length if the money for that budget is allocated monthly).
-    '''
+    """
     
     def __unicode__(self):
         return "Month PeriodLength"
@@ -434,10 +454,10 @@ class Month(PeriodLength):
         raise NotImplementedError()
 
 class Year(PeriodLength):
-    '''
+    """
     Represents a one year period length (eg, a budget would have this period
     length if the money for that budget is allocated yearly).
-    '''
+    """
     
     def __unicode__(self):
         return "Year PeriodLength"
