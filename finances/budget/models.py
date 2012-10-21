@@ -118,14 +118,14 @@ class NamedModel(models.Model):
     @property
     def name(self):
         """
-        returns the display name of this Account
+        Returns the display name of this Account.
         """
         return self._name
     
     @name.setter
     def name(self, name):
         """
-        sets the display name of this Account
+        Sets the display name of this Account.
         """
         self._name = name
 
@@ -139,6 +139,7 @@ class Budget(NamedModel, OwnedModel):
     """
     
     _period_budget_amount = models.FloatField()
+    _period_length = models.ForeignKey(PeriodLength)
     
     def __unicode__(self):
         return self.owner.user.username + "'s Budget: " + self.name
@@ -150,11 +151,18 @@ class Budget(NamedModel, OwnedModel):
         """
         raise NotImplementedError()
     
-    def get_period_length(self):
+    @property
+    def period_length(self):
         """
-        returns the PeriodLength object that determines the period length for this budget
+        Returns the PeriodLength object that determines the period length for this budget.
         """
         raise NotImplementedError()
+    
+    @period_length.setter
+    def period_length(self, length):
+        """
+        Given a PeriodLength object, sets the length of the period for this budget.
+        """
     
     @property
     def period_budget_amount(self):
