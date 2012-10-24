@@ -14,6 +14,8 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from django.test import TestCase
+from budget.models import Budget, Year, UserProfile
+from contrib.auth.models import User
 
 class BudgetTests(TestCase):
     """
@@ -22,3 +24,20 @@ class BudgetTests(TestCase):
     def test_current_account(self):
         # TODO once I figure out how this should work
         pass
+    
+    def test_periodlength_inheritance(self):
+        """
+        See if having PeriodLength as not abstract will call PeriodLength
+        methods or subclass methods
+        """
+        user = User(username = 'testuser', email = 'email@domain.tld')
+        user.save()
+        profile = UserProfile(user = user)
+        profile.save()
+        budget = Budget(owner = profile, period_budget_amount = '100.00')
+        year = Year()
+        year.save()
+        budget.period_length = year
+        budget.save()
+        length = budget.period_length
+        assert(length.__unicode__() == 'Year PeriodLength')

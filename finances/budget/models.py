@@ -129,6 +129,112 @@ class NamedModel(models.Model):
         """
         self._name = name
 
+class PeriodLength(NamedModel):
+    """
+    Abstract class that determines a period length. Since months are not
+    always the same number of days, and years can be leap years, etc., this
+    class exists to help in determining the length of a period.
+    """
+    
+    def __unicode__(self):
+        # This is an abstract class, so this method should be implemented in subclasses
+        raise NotImplementedError()
+    
+    @property
+    def current_period_start_date(self):
+        """
+        Returns the start date of the current period. Uses the @property decorator.
+        
+        This is an abstract method. It always throws a NotImplementedError
+        as subclasses should implement the method and then Duck Typing can
+        be used.
+        """
+        
+        raise NotImplementedError()
+    
+    @property
+    def current_period_end_date(self):
+        """
+        Returns the end date of the current period (inclusive). Uses the @property decorator.
+        
+        This is an abstract method. It always throws a NotImplementedError
+        as subclasses should implement the method and then Duck Typing can
+        be used.
+        """
+        raise NotImplementedError()
+    
+    def in_current_period(self, date_time):
+        """
+        Returns True if the given date_time is in the current period, otherwise returns False
+        
+        This is an abstract method. It always throws a NotImplementedError
+        as subclasses should implement the method and then Duck Typing can
+        be used.
+        """
+        raise NotImplementedError()
+
+class Month(PeriodLength):
+    """
+    Represents a one month period length (eg, a budget would have this period
+    length if the money for that budget is allocated monthly).
+    """
+    
+    def __unicode__(self):
+        return "Month PeriodLength"
+    
+    @property
+    def current_period_start_date(self):
+        """
+        Returns the start date of the current period.
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @property
+    def current_period_end_date(self):
+        """
+        Returns the end date of the current period (inclusive).
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    def in_current_period(self, date_time):
+        """
+        Returns True if the given date_time is in the current period, otherwise returns False
+        """
+        raise NotImplementedError()
+
+class Year(PeriodLength):
+    """
+    Represents a one year period length (eg, a budget would have this period
+    length if the money for that budget is allocated yearly).
+    """
+    
+    def __unicode__(self):
+        return "Year PeriodLength"
+    
+    @property
+    def current_period_start_date(self):
+        """
+        Returns the start date of the current period.
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    @property
+    def current_period_end_date (self) :
+        """
+        Returns the end date of the current period (inclusive).
+        Uses the @property decorator.
+        """
+        raise NotImplementedError()
+    
+    def in_current_period (self, date_time) :
+        """
+        Returns True if the given date_time is in the current period, otherwise returns False
+        """ 
+        raise NotImplementedError()
+
 class Budget(NamedModel, OwnedModel):
     """
     A Budget represents an overall behaviour of a budget. It contains
@@ -138,8 +244,8 @@ class Budget(NamedModel, OwnedModel):
     with said Category are counted against the budget.
     """
     
-    _period_budget_amount = models.FloatField()
-#    _period_length = models.ForeignKey(PeriodLength)
+    _period_budget_amount = models.DecimalField(max_digits = 15, decimal_places = 2)
+    _period_length = models.ForeignKey(PeriodLength)
     
     def __unicode__(self):
         return self.owner.user.username + "'s Budget: " + self.name
@@ -156,14 +262,14 @@ class Budget(NamedModel, OwnedModel):
         """
         Returns the PeriodLength object that determines the period length for this budget.
         """
-        raise NotImplementedError()
+        return self._period_length
     
     @period_length.setter
     def period_length(self, length):
         """
         Given a PeriodLength object, sets the length of the period for this budget.
         """
-        raise NotImplementedError()
+        self._period_length = length
     
     @property
     def period_budget_amount(self):
@@ -264,7 +370,7 @@ class RealTxn(OwnedModel):
     """
     
     _account = models.ForeignKey(RealAcct)
-    _value = models.FloatField()
+    _value = models.DecimalField(max_digits = 15, decimal_places = 2)
     _category = models.ForeignKey(Category)
     
     def __init__(self, account):
@@ -333,7 +439,7 @@ class VirtualTxn(OwnedModel):
     """
     
     _account = models.ForeignKey(VirtualAcct)
-    _value = models.FloatField()
+    _value = models.DecimalField(max_digits = 15, decimal_places = 2)
     _real_txn = models.ForeignKey(RealTxn)
     
     def __init__(self, account, real_txn):
@@ -382,113 +488,4 @@ class VirtualTxn(OwnedModel):
         Returns the RealTxn object associated with this transaction. Uses
         the @property decorator.
         """
-        raise NotImplementedError()
-
-class PeriodLength(NamedModel):
-    """
-    Abstract class that determines a period length. Since months are not
-    always the same number of days, and years can be leap years, etc., this
-    class exists to help in determining the length of a period.
-    """
-    
-    class Meta:
-        abstract = True
-    
-    def __unicode__(self):
-        # This is an abstract class, so this method should be implemented in subclasses
-        raise NotImplementedError()
-    
-    @property
-    def current_period_start_date(self):
-        """
-        Returns the start date of the current period. Uses the @property decorator.
-        
-        This is an abstract method. It always throws a NotImplementedError
-        as subclasses should implement the method and then Duck Typing can
-        be used.
-        """
-        
-        raise NotImplementedError()
-    
-    @property
-    def current_period_end_date(self):
-        """
-        Returns the end date of the current period (inclusive). Uses the @property decorator.
-        
-        This is an abstract method. It always throws a NotImplementedError
-        as subclasses should implement the method and then Duck Typing can
-        be used.
-        """
-        raise NotImplementedError()
-    
-    def in_current_period(self, date_time):
-        """
-        Returns True if the given date_time is in the current period, otherwise returns False
-        
-        This is an abstract method. It always throws a NotImplementedError
-        as subclasses should implement the method and then Duck Typing can
-        be used.
-        """
-        raise NotImplementedError()
-
-class Month(PeriodLength):
-    """
-    Represents a one month period length (eg, a budget would have this period
-    length if the money for that budget is allocated monthly).
-    """
-    
-    def __unicode__(self):
-        return "Month PeriodLength"
-    
-    @property
-    def current_period_start_date(self):
-        """
-        Returns the start date of the current period.
-        Uses the @property decorator.
-        """
-        raise NotImplementedError()
-    
-    @property
-    def current_period_end_date(self):
-        """
-        Returns the end date of the current period (inclusive).
-        Uses the @property decorator.
-        """
-        raise NotImplementedError()
-    
-    def in_current_period(self, date_time):
-        """
-        Returns True if the given date_time is in the current period, otherwise returns False
-        """
-        raise NotImplementedError()
-
-class Year(PeriodLength):
-    """
-    Represents a one year period length (eg, a budget would have this period
-    length if the money for that budget is allocated yearly).
-    """
-    
-    def __unicode__(self):
-        return "Year PeriodLength"
-    
-    @property
-    def current_period_start_date(self):
-        """
-        Returns the start date of the current period.
-        Uses the @property decorator.
-        """
-        raise NotImplementedError()
-    
-    @property
-    def current_period_end_date (self) :
-        """
-        Returns the end date of the current period (inclusive).
-        Uses the @property decorator.
-        """
-        raise NotImplementedError()
-    
-    def in_current_period (self, date_time) :
-        """
-        Returns True if the given date_time is in the current period, otherwise returns False
-        """ 
         raise NotImplementedError()
