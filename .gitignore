@@ -21,5 +21,6 @@ local_settings.py
 # Eclipse Metadata #
 ####################
 .metadata/*
+*/.settings/*
 .project
 .pydevproject
