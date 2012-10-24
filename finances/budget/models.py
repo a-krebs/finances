@@ -139,7 +139,7 @@ class Budget(NamedModel, OwnedModel):
     """
     
     _period_budget_amount = models.FloatField()
-    _period_length = models.ForeignKey(PeriodLength)
+#    _period_length = models.ForeignKey(PeriodLength)
     
     def __unicode__(self):
         return self.owner.user.username + "'s Budget: " + self.name
@@ -163,6 +163,7 @@ class Budget(NamedModel, OwnedModel):
         """
         Given a PeriodLength object, sets the length of the period for this budget.
         """
+        raise NotImplementedError()
     
     @property
     def period_budget_amount(self):
