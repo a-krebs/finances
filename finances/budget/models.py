@@ -302,14 +302,14 @@ class Category(NamedModel, OwnedModel):
     @property
     def budget (self) :
         """
-        returns the Budget object that this Category is under.
+        Returns the Budget object that this Category is under.
         """
         return self._budget
     
     @budget.setter
     def budget (self, budget) :
         """
-        sets the Budget object that this Category is under.
+        Sets the Budget object that this Category is under.
         """
         self._budget = budget
 
