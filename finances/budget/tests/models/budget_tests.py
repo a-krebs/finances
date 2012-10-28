@@ -21,6 +21,7 @@ class BudgetTests(TestCase):
     """
     On the Budget model, only current_account() really needs to be tested.
     """
+    
     def test_current_account(self):
         # TODO once I figure out how this should work
         pass
