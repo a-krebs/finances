@@ -338,9 +338,7 @@ class VirtualAcct(OwnedModel, NamedModel):
     """
     
     _parent_budget = models.ForeignKey(Budget)
-    
-    def __init__(self, parent_budget):
-        self._parent_budget = parent_budget
+    _real_acct = models.ForeignKey(RealAcct)
     
     def __unicode__(self):
         return self.owner.user.username + "'s VirtualAcct " + self.name
@@ -353,6 +351,42 @@ class VirtualAcct(OwnedModel, NamedModel):
         """
         return self._parent_budget
     
+    @parent_budget.setter
+    def parent_budget(self, budget):
+        """
+        Raises a FieldError if the object's parent_budget is already set.
+        """
+        # try to fetch _parent_budget, if it doesn't exist we can set it
+        try:
+            if self._parent_budget:
+                raise FieldError('_parent_budget is already set and cannot be set again')
+        except RealAcct.DoesNotExist:
+            self._parent_budget = budget
+        
+    
+    @parent_budget.setter
+    def parent_budget(self, budget):
+        raise NotImplementedError()
+    
+    @property
+    def real_acct(self):
+        """
+        Returns the RealAcct object this object is associated with.
+        """
+        raise NotImplementedError()
+    
+    @real_acct.setter
+    def real_acct(self, acct):
+        """
+        Raises a FieldError if this object's real_acct is already set.
+        """
+        # try to fetch _real_acct, if it doesn't exist we can set it
+        try:
+            if self._real_acct:
+                raise FieldError('_real_acct is already set and cannot be set again')
+        except RealAcct.DoesNotExist:
+            self._real_acct = acct
+            
     @property
     def balance(self):
         """
@@ -369,12 +403,9 @@ class RealTxn(OwnedModel):
     (money removed from account) as negative.
     """
     
-    _account = models.ForeignKey(RealAcct)
+    _real_account = models.ForeignKey(RealAcct)
     _value = models.DecimalField(max_digits = 15, decimal_places = 2)
     _category = models.ForeignKey(Category)
-    
-    def __init__(self, account):
-        self._account = account
     
     def __unicode__(self):
         return self.owner.username.name + "'s RealTxn " + self.name
@@ -392,7 +423,7 @@ class RealTxn(OwnedModel):
         raise NotImplementedError()
     
     @value.setter
-    def value(self, float):
+    def value(self, amount):
         """
         Sets the value of the transaction.
         
@@ -422,13 +453,25 @@ class RealTxn(OwnedModel):
         raise NotImplementedError()
     
     @property
-    def account(self):
+    def real_acct(self):
         """
         Returns the Account object this transaction is counted against.
         
         Uses the @property decorator.
         """
         raise NotImplementedError()
+    
+    @real_acct.setter
+    def real_acct(self, acct):
+        """
+        Raises a FieldError if this object's real_acct is already set.
+        """
+        # try to fetch _real_acct, if it doesn't exist we can set it
+        try:
+            if self._real_acct:
+                raise FieldError('_real_acct is already set and cannot be set again')
+        except RealAcct.DoesNotExist:
+            self._real_acct = acct
 
 class VirtualTxn(OwnedModel):
     """
@@ -438,13 +481,9 @@ class VirtualTxn(OwnedModel):
     (money removed from account) as negative.
     """
     
-    _account = models.ForeignKey(VirtualAcct)
+    _virtual_acct = models.ForeignKey(VirtualAcct)
     _value = models.DecimalField(max_digits = 15, decimal_places = 2)
     _real_txn = models.ForeignKey(RealTxn)
-    
-    def __init__(self, account, real_txn):
-        self._account = account
-        self._real_txn = real_txn
     
     def __unicode__(self):
         return self.owner.user.username + "'s VirtualTxn " + self.name
@@ -462,7 +501,7 @@ class VirtualTxn(OwnedModel):
         raise NotImplementedError()
     
     @value.setter
-    def value(self, float):
+    def value(self, amount):
         """
         Sets the value of the transaction.
         
@@ -474,13 +513,25 @@ class VirtualTxn(OwnedModel):
         raise NotImplementedError()
     
     @property
-    def account(self):
+    def virtual_acct(self):
         """
-        Returns the Account object this transaction is counted against.
+        Returns the VirtualAcct object this transaction is counted against.
         
         Uses the @property decorator.
         """
         raise NotImplementedError()
+    
+    @virtual_acct.setter
+    def virtual_acct(self, acct):
+        """
+        Raises a FieldError if this object's virtual_acct is already set.
+        """
+        # try to fetch _virtual_acct, if it doesn't exist we can set it
+        try:
+            if self._virtual_acct:
+                raise FieldError('_virtual_acct is already set and cannot be set again')
+        except VirtualAcct.DoesNotExist:
+            self._virtual_acct = acct
     
     @property
     def real_txn(self):
@@ -489,3 +540,15 @@ class VirtualTxn(OwnedModel):
         the @property decorator.
         """
         raise NotImplementedError()
+    
+    @real_txn.setter
+    def real_txn(self, txn):
+        """
+        Raises a FieldError if this object's real_txn is already set.
+        """
+        # try to fetch _real_txn, if it doesn't exist we can set it
+        try:
+            if self._real_txn:
+                raise FieldError('_real_txn is already set and cannot be set again')
+        except VirtualAcct.DoesNotExist:
+            self._real_txn = txn
