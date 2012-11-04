@@ -13,8 +13,4 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.conf.urls import patterns, url, include
-
-urlpatterns = patterns('',
-    url(r'^$', include('budget.views.register.urls', namespace = 'register', app_name = 'budget')),
-)
+from register import *

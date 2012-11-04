@@ -13,7 +13,17 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.http import HttpResponse
+from django.views.generic.base import TemplateView
 
-def index(request):
-    return HttpResponse("Hello, world. You're at the budget app index.")
+class LoginView(TemplateView):
+    '''
+    View for logging in to the application.
+    
+    Takes an argument so that it can redirect to a destination URL after
+    login.
+    '''
+    
+    template_name = 'budget/register/login.haml'
+    
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(None)

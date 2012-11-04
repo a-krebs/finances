@@ -13,8 +13,9 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.conf.urls import patterns, url, include
+from django.conf.urls import patterns, url
+from budget.views import LoginView
 
 urlpatterns = patterns('',
-    url(r'^$', include('budget.views.register.urls', namespace = 'register', app_name = 'budget')),
+    url(r'^$', LoginView.as_view(), name='login'),
 )
