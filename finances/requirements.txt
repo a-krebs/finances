@@ -1,1 +1,2 @@
 Django
+https://github.com/jessemiller/HamlPy/tarball/master
