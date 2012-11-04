@@ -14,10 +14,43 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from django.test import TestCase
+from contrib.auth.models import User
+from budget.models import UserProfile, Budget, Year, Category, RealAcct,\
+    VirtualAcct, RealTxn, VirtualTxn
 
 class VirtualAcctTests(TestCase):
     """
     Tests balance of Virtual Acct objects.
     """
     
-    # TODO write tests
+    def setUp(self):
+        """
+        Add some transactions to a VirtualAcct.
+        """
+        user = User(username = 'testuser', email = 'email@domain.tld')
+        user.save()
+        profile = UserProfile(user = user)
+        profile.save()
+        budget = Budget(owner = profile, period_budget_amount = '100.00')
+        year = Year()
+        year.save()
+        budget.period_length = year
+        budget.save()
+        
+        category = Category(owner = profile, name = 'test', budget = budget)
+        category.save()
+        
+        self.acct = RealAcct(owner = profile)
+        self.acct.save()
+        self.vacct = VirtualAcct(owner = profile, real_acct = self.acct, parent_budget = budget)
+        self.vacct.save()
+        
+        self.txn_1 = RealTxn(value = '110.00', category = category, real_acct = self.acct)
+        self.txn_1.save()
+        self.vtxn_1 = VirtualTxn(value = '90.00', real_txn = self.txn_1, virtual_acct = self.vacct)
+        self.vtxn_1.save()
+        self.vtxn_2 = VirtualTxn(value = '20.00', real_txn = self.txn_1, virtual_acct = self.vacct)
+        self.vtxn_2.save()
+        
+    def test_balance(self):
+        self.assertEqual(self.vacct.balance, '110.00')
