@@ -16,5 +16,6 @@
 from django.conf.urls import patterns, url, include
 
 urlpatterns = patterns('',
-    url(r'^$', include('budget.views.register.urls', namespace = 'register', app_name = 'budget')),
+#    url(r'^$', include('budget.views.register.urls', namespace = 'register', app_name = 'budget')),
+    url(r'login/$', 'django.contrib.auth.views.login', {'template_name': 'budget/register/login.haml'}, name = 'login'),
 )
