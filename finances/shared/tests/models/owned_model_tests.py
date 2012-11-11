@@ -14,10 +14,10 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from django.test import TestCase
-from budget.models import OwnedModel, UserProfile
 from django.test.client import RequestFactory
 from django.contrib.auth.models import User
 from django.core.exceptions import FieldError
+from shared.models import OwnedModel, UserProfile
 
 class OwnedModelTestModel(OwnedModel):
     """

@@ -13,10 +13,10 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.test import TestCase
-from budget.models import PeriodLength, Month, Year
 from datetime import datetime
 from calendar import monthrange
+from django.test import TestCase
+from shared.models import PeriodLength, Month, Year
 
 class PeriodLengthTests(TestCase):
     """

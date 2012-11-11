@@ -5,6 +5,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
+    ('Aaron Krebs', 'akrebs@ualberta.ca'),
 )
 
 MANAGERS = ADMINS
@@ -124,11 +125,11 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
+    'shared',
     'register',
-    'budget',
 )
 
-AUTH_PROFILE_MODULE = ' budget.UserProfile'
+AUTH_PROFILE_MODULE = ' shared.UserProfile'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

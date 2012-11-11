@@ -15,7 +15,7 @@
 
 from django.test import TestCase
 from contrib.auth.models import User
-from budget.models import UserProfile, RealAcct, Budget, Year, Category, RealTxn
+from shared.models import UserProfile, RealAcct, Budget, Year, Category, RealTxn
 
 class RealAcctTests(TestCase):
     """

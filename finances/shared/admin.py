@@ -15,7 +15,7 @@
 
 from django.contrib import admin
 
-from budget.models import (
+from shared.models import (
             UserProfile,
             Budget,
             Category,

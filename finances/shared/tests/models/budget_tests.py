@@ -13,19 +13,23 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.test import TestCase
 from contrib.auth.models import User
-from budget.models import UserProfile, Budget, Year, Category, RealAcct,\
-    VirtualAcct, RealTxn, VirtualTxn
+from django.test import TestCase
+from shared.models import Budget, Year, UserProfile
 
-class VirtualAcctTests(TestCase):
+class BudgetTests(TestCase):
     """
-    Tests balance of Virtual Acct objects.
+    On the Budget model, only current_account() really needs to be tested.
     """
     
-    def setUp(self):
+    def test_current_account(self):
+        # TODO once I figure out how this should work
+        pass
+    
+    def test_periodlength_inheritance(self):
         """
-        Add some transactions to a VirtualAcct.
+        See if having PeriodLength as not abstract will call PeriodLength
+        methods or subclass methods
         """
         user = User(username = 'testuser', email = 'email@domain.tld')
         user.save()
@@ -36,21 +40,5 @@ class VirtualAcctTests(TestCase):
         year.save()
         budget.period_length = year
         budget.save()
-        
-        category = Category(owner = profile, name = 'test', budget = budget)
-        category.save()
-        
-        self.acct = RealAcct(owner = profile)
-        self.acct.save()
-        self.vacct = VirtualAcct(owner = profile, real_acct = self.acct, parent_budget = budget)
-        self.vacct.save()
-        
-        self.txn_1 = RealTxn(value = '110.00', category = category, real_acct = self.acct)
-        self.txn_1.save()
-        self.vtxn_1 = VirtualTxn(value = '90.00', real_txn = self.txn_1, virtual_acct = self.vacct)
-        self.vtxn_1.save()
-        self.vtxn_2 = VirtualTxn(value = '20.00', real_txn = self.txn_1, virtual_acct = self.vacct)
-        self.vtxn_2.save()
-        
-    def test_balance(self):
-        self.assertEqual(self.vacct.balance, '110.00')
+        length = budget.period_length
+        assert(length.__unicode__() == 'Year PeriodLength')
