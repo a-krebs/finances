@@ -1,0 +1,19 @@
+!!! Strict
+%html
+	%head
+		%title
+			-block title
+		
+		-block scripts
+		%link{'rel' : 'stylesheet', 'type ' : 'text/css', 'href' : '={ STATIC_URL }css/containers.css'}
+	%body
+		#wrapper
+			#wrapper-header
+				#header
+					-block header
+			#wrapper-content
+				#content
+					-block content
+			#wrapper-footer
+				#footer
+					-block footer
