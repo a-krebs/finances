@@ -16,7 +16,6 @@
 from django.contrib import admin
 
 from shared.models import (
-            UserProfile,
             Budget,
             Category,
             RealAcct,
@@ -27,7 +26,6 @@ from shared.models import (
             Year,
             )
 
-admin.site.register(UserProfile)
 admin.site.register(Budget)
 admin.site.register(Category)
 admin.site.register(RealAcct)
