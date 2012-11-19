@@ -19,40 +19,6 @@ from django.core.exceptions import FieldError
 
 CHARFIELD_MAX_LENGTH = 200
 
-class UserProfile(models.Model):
-    """
-    This class is set up as the Django user profile model;
-    see the documentation on Authentication for more information:
-    django-docs-1.4-en/topics/auth.html#storing-additional-information-about-users
-    
-    This class exists to associate a user with their accounts and
-    budget policies within the app, and store additional information to Django's User
-    """
-    
-    _user = models.OneToOneField(User)
-    
-    def __unicode__(self):
-        return self.user.username + "'s Profile"
-    
-    @property
-    def user(self):
-        """
-        Returns the Django User object associated with this profile.
-        """
-        return self._user
-    
-    @user.setter
-    def user(self, user):
-        """
-        Raises a FieldError if this object's user is already set.
-        """
-        # try to fetch _user, if it doesn't exist we can set it
-        try:
-            if self._user:
-                raise FieldError('user is already set and cannot be set again')
-        except User.DoesNotExist:
-            self._user = user
-
 class OwnedModel(models.Model):
     """
     Abstract class to move owner attribute into a common parent class.
@@ -60,7 +26,7 @@ class OwnedModel(models.Model):
     Owner should be set at instantiation, and not be changed afterward.
     """
     
-    _owner = models.ForeignKey(UserProfile)
+    _owner = models.ForeignKey(User)
     
     class Meta:
         abstract = True
@@ -72,7 +38,7 @@ class OwnedModel(models.Model):
     @property
     def owner(self):
         """
-        Returns the UserProfile object of this Account's owner.
+        Returns the User object of this Account's owner.
         """
         return self._owner 
     
@@ -85,7 +51,7 @@ class OwnedModel(models.Model):
         try:
             if self._owner:
                 raise FieldError('owner is already set and cannot be set again')
-        except UserProfile.DoesNotExist:
+        except User.DoesNotExist:
             self._owner = owner
     
     def is_allowed(self, request):
