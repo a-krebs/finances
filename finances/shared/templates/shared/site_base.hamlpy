@@ -5,7 +5,10 @@
 			-block title
 		
 		-block scripts
+		-block links
+		
 		%link{'rel' : 'stylesheet', 'type ' : 'text/css', 'href' : '={ STATIC_URL }css/containers.css'}
+	
 	%body
 		#wrapper
 			#wrapper-header

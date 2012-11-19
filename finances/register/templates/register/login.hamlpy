@@ -1,7 +1,10 @@
 -extends 'shared/site_base.hamlpy'
 
+-block links
+	%link{'rel' : 'stylesheet', 'type ' : 'text/css', 'href' : '={ STATIC_URL }css/login.css'}
+
 -block content
-	.login-content
+	#login-content
 		-if form.errors
 			%p The username and password you entered are incorrect. Please try again.
 	
@@ -20,5 +23,5 @@
 					%td
 						= form.password
 			
-			%input{type : "submit", value : "login" }
+			%input{type : "submit", value : "Sign In" }
 			%input{type : "hidden", name : "next", value : "={ next }" }
