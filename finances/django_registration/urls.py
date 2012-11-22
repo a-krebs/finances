@@ -13,6 +13,24 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-"""
-No tests here yet.
-"""
+from django.views.generic.simple import direct_to_template
+
+from registration.views import register
+
+from django.conf.urls import patterns, include, url
+urlpatterns = patterns('',
+    # urls for simple one-step registration
+    url(r'^register/$',
+        register,
+        {'backend': 'registration.backends.simple.SimpleBackend',
+            'template_name' : 'registration/registration_form.hamlpy',
+        },
+        name='registration_register'
+    ),
+    url(r'^register/closed/$',
+        direct_to_template,
+        {'template': 'registration/registration_closed.hamlpy'},
+        name='registration_disallowed'
+    ),
+    (r'', include('registration.auth_urls')),
+)

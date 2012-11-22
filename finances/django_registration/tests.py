@@ -13,9 +13,6 @@
 #You should have received a copy of the GNU General Public License
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.conf.urls import patterns, url
-
-urlpatterns = patterns('',
-    # use a django generic view for logins
-    url(r'^$', 'django.contrib.auth.views.login', {'template_name': 'register/login.djhaml'}, name = 'login'),
-)
+"""
+Nothing here yet.
+"""
