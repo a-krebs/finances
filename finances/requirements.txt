@@ -2,3 +2,4 @@ Django
 https://github.com/jessemiller/HamlPy/tarball/master
 scss
 django-registration
+django-debug-toolbar
