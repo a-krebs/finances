@@ -129,9 +129,9 @@ class PeriodLength(NamedModel):
         """
         raise NotImplementedError()
     
-    def in_current_period(self, date_time):
+    def in_current_period(self, timezone_date):
         """
-        Returns True if the given date_time is in the current period, otherwise returns False
+        Returns True if the given timezone_date is in the current period, otherwise returns False
         
         This is an abstract method. It always throws a NotImplementedError
         as subclasses should implement the method and then Duck Typing can
@@ -164,9 +164,9 @@ class Month(PeriodLength):
         """
         raise NotImplementedError()
     
-    def in_current_period(self, date_time):
+    def in_current_period(self, timezone_date):
         """
-        Returns True if the given date_time is in the current period, otherwise returns False
+        Returns True if the given timezone_date is in the current period, otherwise returns False
         """
         raise NotImplementedError()
 
@@ -195,9 +195,9 @@ class Year(PeriodLength):
         """
         raise NotImplementedError()
     
-    def in_current_period (self, date_time) :
+    def in_current_period (self, timezone_date) :
         """
-        Returns True if the given date_time is in the current period, otherwise returns False
+        Returns True if the given timezone_date is in the current period, otherwise returns False
         """ 
         raise NotImplementedError()
 
