@@ -21,22 +21,20 @@
 
 -block content
 	#login-content
-		-if form.errors
-			%p The username and password you entered are incorrect. Please try again.
 		
 		%form{'action' : "{% url registration:auth_login %}", 'method' : 'post' }
 			-csrf_token
 			
-			%table
-				%tr
-					%td
+			%fieldset
+				-if form.errors
+					%span.errors
+						The username and password you entered are incorrect. Please try again.
+				%ol
+					%li
 						= form.username.label_tag
-					%td
 						= form.username
-				%tr
-					%td
+					%li
 						= form.password.label_tag
-					%td
 						= form.password
 			
 			%input{type : "submit", value : "Sign In" }
