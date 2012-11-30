@@ -18,6 +18,11 @@ local
 *~
 local_settings.py
 
+# Sass #
+########
+
+*.sassc
+
 # Eclipse Metadata #
 ####################
 .metadata/*
