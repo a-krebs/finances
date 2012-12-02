@@ -20,22 +20,20 @@
 	%link{'rel' : 'stylesheet', 'type ' : 'text/css', 'href' : '={ STATIC_URL }css/login.css'}
 
 -block content
-	#login-content
+	%form{'action' : "{% url registration:auth_login %}", 'method' : 'post' }
+		-csrf_token
 		
-		%form{'action' : "{% url registration:auth_login %}", 'method' : 'post' }
-			-csrf_token
-			
-			%fieldset
-				-if form.errors
-					%span.errors
-						The username and password you entered are incorrect. Please try again.
-				%ol
-					%li
-						= form.username.label_tag
-						= form.username
-					%li
-						= form.password.label_tag
-						= form.password
-			
-				%input{type : "submit", value : "Sign In" }
-				%input{type : "hidden", name : "next", value : "={ next }" }
+		%fieldset
+			-if form.errors
+				%span.errors
+					The username and password you entered are incorrect. Please try again.
+			%ol
+				%li
+					= form.username.label_tag
+					= form.username
+				%li
+					= form.password.label_tag
+					= form.password
+		
+			%input{type : "submit", value : "Sign In" }
+			%input{type : "hidden", name : "next", value : "={ next }" }
