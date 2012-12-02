@@ -31,6 +31,6 @@
 						= field.label_tag
 						= field
 						= field.errors
-		
+			
 			%input{type : "submit", value : "Create Account" }
 			%input{type : "hidden", name : "next", value : "={ next }" }
