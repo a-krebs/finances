@@ -21,11 +21,11 @@ local_settings.py
 # Sass #
 ########
 
-*.sassc
+.sass-cache
 
 # Eclipse Metadata #
 ####################
-.metadata/*
-*/.settings/*
+.metadata/
+.settings/
 .project
 .pydevproject
