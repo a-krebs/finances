@@ -16,4 +16,9 @@
 
 -extends 'shared/site_base.hamlpy'
 
+-block links
+	%link{'rel' : 'stylesheet', 'type ' : 'text/css', 'href' : '={ STATIC_URL }css/registration_closed.css'}
+
 -block content
+	%span.centered
+		Sorry, registration is currently closed.
