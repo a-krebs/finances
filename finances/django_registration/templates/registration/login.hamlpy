@@ -37,5 +37,5 @@
 						= form.password.label_tag
 						= form.password
 			
-			%input{type : "submit", value : "Sign In" }
-			%input{type : "hidden", name : "next", value : "={ next }" }
+				%input{type : "submit", value : "Sign In" }
+				%input{type : "hidden", name : "next", value : "={ next }" }
