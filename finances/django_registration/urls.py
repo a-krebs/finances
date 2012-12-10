@@ -14,11 +14,12 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from django.views.generic.simple import direct_to_template
+from django.contrib.auth import views as auth_views
+from django.conf.urls import patterns, url
+from django.core.urlresolvers import reverse_lazy
 
 from registration.views import register
-from django.contrib.auth import views as auth_views
 
-from django.conf.urls import patterns, url
 urlpatterns = patterns('',
     # urls for simple one-step registration
     url(r'^register/$',
@@ -45,7 +46,12 @@ urlpatterns = patterns('',
     ),
     url(r'^password/change/$',
         auth_views.password_change,
-        {'template_name' : 'registration/password_change_form.hamlpy'},
+        {'template_name' : 'registration/password_change_form.hamlpy',
+            # ugh, this is tied to the namespace; needs to be namespace-agnostic
+            # since the namspace is determined by the importing app
+            # see Issue #1
+            'post_change_redirect' : reverse_lazy('registration:auth_password_change_done')
+        },
         name='auth_password_change'
     ),
     url(r'^password/change/done/$',
