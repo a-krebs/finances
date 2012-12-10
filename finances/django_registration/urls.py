@@ -49,7 +49,7 @@ urlpatterns = patterns('',
         {'template_name' : 'registration/password_change_form.hamlpy',
             # ugh, this is tied to the namespace; needs to be namespace-agnostic
             # since the namspace is determined by the importing app
-            # see Issue #1
+            # TODO: see Issue #1
             'post_change_redirect' : reverse_lazy('registration:auth_password_change_done')
         },
         name='auth_password_change'
@@ -61,7 +61,10 @@ urlpatterns = patterns('',
     ),
     url(r'^password/reset/$',
         auth_views.password_reset,
-        {'template_name' : 'registration/password_reset_form.hamlpy'},
+        {'template_name' : 'registration/password_reset_form.hamlpy',
+            # same issue as above
+            'post_reset_redirect' : reverse_lazy('registration:auth_password_reset_done')
+        },
         name='auth_password_reset'
     ),
     url(r'^password/reset/confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
