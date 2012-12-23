@@ -63,7 +63,9 @@ urlpatterns = patterns('',
         auth_views.password_reset,
         {'template_name' : 'registration/password_reset_form.hamlpy',
             # same issue as above
-            'post_reset_redirect' : reverse_lazy('registration:auth_password_reset_done')
+            'post_reset_redirect' : reverse_lazy('registration:auth_password_reset_done'),
+            'email_template_name' : 'registration/password_reset_email.hammlpy',
+            'subject_template_name' : 'registration/password_reset_subject.hamlpy',
         },
         name='auth_password_reset'
     ),
