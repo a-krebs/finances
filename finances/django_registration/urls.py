@@ -71,7 +71,10 @@ urlpatterns = patterns('',
     ),
     url(r'^password/reset/confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$',
         auth_views.password_reset_confirm,
-        {'template_name' : 'registration/password_reset_confirm.hamlpy'},
+        {'template_name' : 'registration/password_reset_confirm.hamlpy',
+            # same issue as above
+            'post_reset_redirect' : reverse_lazy('registration:auth_password_reset_complete'),
+        },
         name='auth_password_reset_confirm'
     ),
     url(r'^password/reset/complete/$',
