@@ -33,8 +33,15 @@ class PeriodLengthTests(TestCase):
         
         self.month_beginning = datetime(now.year, now.month, 1)
         self.month_end = datetime(now.year, now.month, monthrange(now.year, now.month)[1])
-        self.next_month = datetime(now.year, now.month + 1, 1)
-        self.previous_month = datetime(now.year, now.month - 1, 1)
+        # account for Jan and Dec in month testing
+        if now.month == 12:
+            self.next_month = datetime(now.year, 1, 1)
+        else:
+            self.next_month = datetime(now.year, now.month + 1, 1)
+        if now.month == 1:
+            self.previous_month = datetime(now.year - 1, 12, 1)
+        else:
+            self.previous_month = datetime(now.year, now.month - 1, 1)
         
         self.year_beginning = datetime(now.year, 1, 1)
         self.year_end = datetime(now.year, 12, 31)

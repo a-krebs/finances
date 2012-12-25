@@ -14,8 +14,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from django.test import TestCase
-from contrib.auth.models import User
-from shared.models import UserProfile, Budget, Year, Category, RealAcct,\
+from django.contrib.auth.models import User
+from shared.models import Budget, Year, Category, RealAcct,\
     VirtualAcct, RealTxn, VirtualTxn
 
 class VirtualAcctTests(TestCase):
@@ -27,23 +27,17 @@ class VirtualAcctTests(TestCase):
         """
         Add some transactions to a VirtualAcct.
         """
-        user = User(username = 'testuser', email = 'email@domain.tld')
-        user.save()
-        profile = UserProfile(user = user)
-        profile.save()
-        budget = Budget(owner = profile, period_budget_amount = '100.00')
-        year = Year()
-        year.save()
+        user = User.objects.create(username = 'testuser', email = 'email@domain.tld')
+        budget = Budget(owner = user, period_budget_amount = '100.00')
+        year = Year.objects.create()
         budget.period_length = year
         budget.save()
         
-        category = Category(owner = profile, name = 'test', budget = budget)
+        category = Category(owner = user, name = 'test', budget = budget)
         category.save()
         
-        self.acct = RealAcct(owner = profile)
-        self.acct.save()
-        self.vacct = VirtualAcct(owner = profile, real_acct = self.acct, parent_budget = budget)
-        self.vacct.save()
+        self.acct = RealAcct.objects.create(owner = user)
+        self.vacct = VirtualAcct.objects.create(owner = user, real_acct = self.acct, parent_budget = budget)
         
         self.txn_1 = RealTxn(value = '110.00', category = category, real_acct = self.acct)
         self.txn_1.save()

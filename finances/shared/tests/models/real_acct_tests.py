@@ -14,8 +14,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from django.test import TestCase
-from contrib.auth.models import User
-from shared.models import UserProfile, RealAcct, Budget, Year, Category, RealTxn
+from django.contrib.auth.models import User
+from shared.models import RealAcct, Budget, Year, Category, RealTxn
 
 class RealAcctTests(TestCase):
     """
@@ -27,21 +27,15 @@ class RealAcctTests(TestCase):
         """
         Add some transactions to a RealAcct.
         """
-        user = User(username = 'testuser', email = 'email@domain.tld')
-        user.save()
-        profile = UserProfile(user = user)
-        profile.save()
-        budget = Budget(owner = profile, period_budget_amount = '100.00')
-        year = Year()
-        year.save()
+        user = User.objects.create(username = 'testuser', email = 'email@domain.tld')
+        budget = Budget(owner = user, period_budget_amount = '100.00')
+        year = Year.objects.create()
         budget.period_length = year
         budget.save()
         
-        category = Category(owner = profile, name = 'test', budget = budget)
-        category.save()
+        category = Category.objects.create(owner = user, name = 'test', budget = budget)
         
-        self.acct = RealAcct(owner = profile)
-        self.acct.save()
+        self.acct = RealAcct.objects.create(owner = user)
         
         self.txn_1 = RealTxn(value = '110.00', category = category, real_acct = self.acct)
         self.txn_1.save()

@@ -13,9 +13,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.test import TestCase
-from shared.models import Budget, Year, UserProfile
+from shared.models import Budget, Year
 
 class BudgetTests(TestCase):
     """
@@ -31,13 +31,9 @@ class BudgetTests(TestCase):
         See if having PeriodLength as not abstract will call PeriodLength
         methods or subclass methods
         """
-        user = User(username = 'testuser', email = 'email@domain.tld')
-        user.save()
-        profile = UserProfile(user = user)
-        profile.save()
-        budget = Budget(owner = profile, period_budget_amount = '100.00')
-        year = Year()
-        year.save()
+        user = User.objects.create(username = 'testuser', email = 'email@domain.tld')
+        budget = Budget(owner = user, period_budget_amount = '100.00')
+        year = Year.objects.create()
         budget.period_length = year
         budget.save()
         length = budget.period_length
