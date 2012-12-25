@@ -1,42 +1,51 @@
+/* line 29, ../sass/containers.sass */
 body {
-	margin: 0;
-	padding: 0;
-	height: 100%;}
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
 
+/* line 34, ../sass/containers.sass */
 #wrapper {
-	width: 100%;
-	height: 100%;}
-
+  width: 100%;
+  height: 100%;
+}
+/* line 38, ../sass/containers.sass */
 #wrapper #wrapper-content {
-	width: 970px;
-	margin-left: auto;
-	margin-right: auto;
-	height: 100%;}
-
+  width: 970px;
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+}
+/* line 44, ../sass/containers.sass */
 #wrapper #wrapper-content #content {
-	margin: 5px;}
-
+  margin: 5px;
+}
+/* line 47, ../sass/containers.sass */
 #wrapper #wrapper-header {
-	width: 100%;
-	background-color: #c0c0c0;
-	height: 70px;}
-
+  width: 100%;
+  background-color: silver;
+  height: 70px;
+}
+/* line 52, ../sass/containers.sass */
 #wrapper #wrapper-header #header {
-	width: 970px;
-	height: 60px;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 5px;}
-
+  width: 970px;
+  height: 60px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+}
+/* line 59, ../sass/containers.sass */
 #wrapper #wrapper-footer {
-	width: 100%;
-	background-color: #c0c0c0;
-	height: 70px;}
-
+  width: 100%;
+  background-color: silver;
+  height: 70px;
+}
+/* line 64, ../sass/containers.sass */
 #wrapper #wrapper-footer #footer {
-	width: 970px;
-	height: 60px;
-	margin-left: auto;
-	margin-right: auto;
-	padding: 5px;}
-
+  width: 970px;
+  height: 60px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 5px;
+}
