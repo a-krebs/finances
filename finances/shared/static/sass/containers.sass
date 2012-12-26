@@ -1,0 +1,69 @@
+// Copyright (C) 2012  Aaron Krebs akrebs@ualberta.ca
+// 
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+$wrapper-content-width: 970px
+$header-width: $wrapper-content-width
+$footer-width: $wrapper-content-width
+
+$wrapper-header-height: 70px
+$wrapper-footer-height: 70px
+
+$header-padding: 5px
+$footer-padding: 5px
+$content-margin: 5px
+
+$content-min-height: 1000px
+
+body
+	margin: 0
+	padding: 0
+	height: 100%
+
+#wrapper
+	width: 100%
+	height: 100%
+	
+	#wrapper-content
+		width: $wrapper-content-width
+		margin-left: auto
+		margin-right: auto
+		height: 100%
+		
+		#content
+			margin: $content-margin
+	
+	#wrapper-header
+		width: 100%
+		background-color: #C0C0C0
+		height: $wrapper-header-height
+		
+		#header
+			width: $header-width
+			height: $wrapper-header-height - $header-padding - $header-padding
+			margin-left: auto
+			margin-right: auto
+			padding: $header-padding
+	
+	#wrapper-footer
+		width: 100%
+		background-color: #C0C0C0
+		height: $wrapper-footer-height
+		
+		#footer
+			width: $footer-width
+			height: $wrapper-footer-height - $footer-padding - $footer-padding
+			margin-left: auto
+			margin-right: auto
+			padding: $footer-padding

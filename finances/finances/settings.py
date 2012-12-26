@@ -1,3 +1,18 @@
+# Copyright (C) 2012  Aaron Krebs akrebs@ualberta.ca
+# 
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
 # Django settings for finances project.
 
 DEBUG = True
@@ -5,6 +20,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
+    ('Aaron Krebs', 'akrebs@ualberta.ca'),
 )
 
 MANAGERS = ADMINS
@@ -19,6 +35,8 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+PASSWORD_HASHERS = ['django.contrib.auth.hashers.PBKDF2PasswordHasher',]
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -85,9 +103,21 @@ SECRET_KEY = '5an%f#dxds*)1cocxncwu(f@3l#^t9)ld=$6zc8dilg+e5t9$t'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
+    'hamlpy.template.loaders.HamlPyFilesystemLoader',
+    'hamlpy.template.loaders.HamlPyAppDirectoriesLoader',
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
+)
+
+TEMPLATE_CONTEXT_PREPROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -96,6 +126,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -122,10 +153,20 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     'django.contrib.admindocs',
-    'budget'
+    # to override django-registration urls and templates, look in the
+    # django_registration app
+    'registration',
+    'debug_toolbar',
+    'django_registration',
+    # shared components, mostly models
+    'shared',
 )
 
-AUTH_PROFILE_MODULE = ' budget.UserProfile'
+# django-registration settings
+ACCOUNT_ACTIVATION_DAYS = 7
+
+# needed by debug_toolbar middleware
+INTERNAL_IPS = ('127.0.0.1',)
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
