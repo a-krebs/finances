@@ -216,7 +216,7 @@ class Budget(NamedModel, OwnedModel):
     with said Category are counted against the budget.
     """
     
-    _period_budget_amount = models.DecimalField(max_digits = 15, decimal_places = 2)
+    _period_budget_amount = models.DecimalField(max_digits=15, decimal_places=2)
     _period_length = models.ForeignKey(PeriodLength)
     
     def __unicode__(self):
@@ -380,7 +380,7 @@ class RealTxn(OwnedModel):
     """
     
     _real_account = models.ForeignKey(RealAcct)
-    _value = models.DecimalField(max_digits = 15, decimal_places = 2)
+    _value = models.DecimalField(max_digits=15, decimal_places=2)
     _category = models.ForeignKey(Category)
     
     def __unicode__(self):
@@ -459,7 +459,7 @@ class VirtualTxn(OwnedModel):
     """
     
     _virtual_acct = models.ForeignKey(VirtualAcct)
-    _value = models.DecimalField(max_digits = 15, decimal_places = 2)
+    _value = models.DecimalField(max_digits=15, decimal_places=2)
     _real_txn = models.ForeignKey(RealTxn)
     
     def __unicode__(self):
