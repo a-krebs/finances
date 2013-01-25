@@ -18,4 +18,4 @@ from accounts.views import AccountsDashboard
 
 urlpatterns = patterns('',
     # accounts dashboard page
-    url(r'^index/$', AccountsDashboard, name='index'))
+    url(r'^index/$', AccountsDashboard.as_view(), name='index'))
