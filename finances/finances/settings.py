@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+from django.core.urlresolvers import reverse_lazy
+
 # Django settings for finances project.
 
 DEBUG = True
@@ -82,6 +84,9 @@ STATIC_ROOT = ''
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
 STATIC_URL = '/static/'
+
+# redirect to accounts listing page after login
+LOGIN_REDIRECT_URL = reverse_lazy('accounts:index')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -160,6 +165,7 @@ INSTALLED_APPS = (
     'django_registration',
     # shared components, mostly models
     'shared',
+    'accounts',
 )
 
 # django-registration settings
