@@ -14,3 +14,4 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from dash import AccountsDashboard
+from create_real_acct import AccountsCreateRealAcct

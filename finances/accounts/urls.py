@@ -15,7 +15,10 @@
 
 from django.conf.urls import patterns, url
 from accounts.views import AccountsDashboard
+from accounts.views import AccountsCreateRealAcct
 
 urlpatterns = patterns('',
     # accounts dashboard page
-    url(r'^index/$', AccountsDashboard.as_view(), name='index'))
+    url(r'^index/$', AccountsDashboard.as_view(), name='index'),
+    url(r'^create/$', AccountsCreateRealAcct.as_view(), name='create'),
+)
