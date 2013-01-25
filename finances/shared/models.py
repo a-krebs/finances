@@ -19,6 +19,7 @@ from django.core.exceptions import FieldError
 
 CHARFIELD_MAX_LENGTH = 200
 
+
 class OwnedModel(models.Model):
     """
     Abstract class to move owner attribute into a common parent class.
@@ -67,6 +68,7 @@ class OwnedModel(models.Model):
         """
         raise NotImplementedError()
 
+
 class NamedModel(models.Model):
     """
     Abstract class to move name attribute into a common parent class.
@@ -94,6 +96,7 @@ class NamedModel(models.Model):
         Sets the display name of this Account.
         """
         self._name = name
+
 
 class PeriodLength(NamedModel):
     """
@@ -139,6 +142,7 @@ class PeriodLength(NamedModel):
         """
         raise NotImplementedError()
 
+
 class Month(PeriodLength):
     """
     Represents a one month period length (eg, a budget would have this period
@@ -170,6 +174,7 @@ class Month(PeriodLength):
         """
         raise NotImplementedError()
 
+
 class Year(PeriodLength):
     """
     Represents a one year period length (eg, a budget would have this period
@@ -200,6 +205,7 @@ class Year(PeriodLength):
         Returns True if the given timezone_date is in the current period, otherwise returns False
         """ 
         raise NotImplementedError()
+
 
 class Budget(NamedModel, OwnedModel):
     """
@@ -253,6 +259,7 @@ class Budget(NamedModel, OwnedModel):
         """
         self._period_budget_amount = float_amount
 
+
 class Category(NamedModel, OwnedModel):
     """
     The Category class defines types of Transactions. Categories can be
@@ -279,6 +286,7 @@ class Category(NamedModel, OwnedModel):
         """
         self._budget = budget
 
+
 class RealAcct(OwnedModel, NamedModel):
     """
     Represents a real-world bank account. RealTxn class objects can be listed
@@ -296,6 +304,7 @@ class RealAcct(OwnedModel, NamedModel):
         aggregate of all the VirtualAccts associated with this RealAcct
         """
         raise NotImplementedError()
+
 
 class VirtualAcct(OwnedModel, NamedModel):
     """
@@ -360,6 +369,7 @@ class VirtualAcct(OwnedModel, NamedModel):
         associated with it. Uses  the @property decorator.
         """
         raise NotImplementedError()
+
 
 class RealTxn(OwnedModel):
     """
@@ -438,6 +448,7 @@ class RealTxn(OwnedModel):
                 raise FieldError('_real_acct is already set and cannot be set again')
         except RealAcct.DoesNotExist:
             self._real_acct = acct
+
 
 class VirtualTxn(OwnedModel):
     """

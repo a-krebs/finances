@@ -18,6 +18,7 @@ from calendar import monthrange
 from django.test import TestCase
 from shared.models import PeriodLength, Month, Year
 
+
 class PeriodLengthTests(TestCase):
     """
     Test for all PeriodLength subclasses.

@@ -17,6 +17,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from shared.models import RealAcct, Budget, Year, Category, RealTxn
 
+
 class RealAcctTests(TestCase):
     """
     Tests that balance is the aggregate of all virtual accounts

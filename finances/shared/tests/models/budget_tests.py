@@ -17,6 +17,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from shared.models import Budget, Year
 
+
 class BudgetTests(TestCase):
     """
     On the Budget model, only current_account() really needs to be tested.

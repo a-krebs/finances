@@ -19,10 +19,12 @@ from django.contrib.auth.models import User
 from django.core.exceptions import FieldError
 from shared.models import OwnedModel
 
+
 class OwnedModelTestModel(OwnedModel):
     """
     Model to inherit from abstract OwnedModel for testing.
     """
+
 
 class OwnedModelTests(TestCase):
     def setUp(self):

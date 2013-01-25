@@ -18,6 +18,7 @@ from django.contrib.auth.models import User
 from shared.models import Budget, Year, Category, RealAcct,\
     VirtualAcct, RealTxn, VirtualTxn
 
+
 class VirtualAcctTests(TestCase):
     """
     Tests balance of Virtual Acct objects.
