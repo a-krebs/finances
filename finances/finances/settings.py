@@ -29,7 +29,7 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.db.backends.sqlite3',  # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': '/home/aaron/workspaces/finances/finances/sqlite.db',                      # Or path to database file if using sqlite3.
         'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
@@ -38,7 +38,7 @@ DATABASES = {
     }
 }
 
-PASSWORD_HASHERS = ['django.contrib.auth.hashers.PBKDF2PasswordHasher',]
+PASSWORD_HASHERS = ['django.contrib.auth.hashers.PBKDF2PasswordHasher']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -87,6 +87,9 @@ STATIC_URL = '/static/'
 
 # redirect to accounts listing page after login
 LOGIN_REDIRECT_URL = reverse_lazy('accounts:index')
+
+# redirect if user isn't logged in
+LOGIN_URL = reverse_lazy('registration:auth_login')
 
 # Additional locations of static files
 STATICFILES_DIRS = (
