@@ -28,8 +28,8 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^register/', include('django_registration.urls', namespace = 'registration')),
-    url(r'^accounts/', include('accounts.urls', namespace = 'accounts')),
+    url(r'^register/', include('django_registration.urls', namespace='registration')),
+    url(r'^accounts/', include('accounts.urls', namespace='accounts')),
 )
 
 # TODO: remove before deployment
