@@ -1,4 +1,4 @@
-# Copyright (C) 2013  Aaron Krebs akrebs@ualberta.ca
+# Copyright (C) 2012  Aaron Krebs akrebs@ualberta.ca
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,14 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.views.generic.base import TemplateView
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
-from shared.views.mixins.login_required import LoginRequiredMixin
 
-
-class AccountsDashboard(LoginRequiredMixin, TemplateView):
-    """
-    Show a listing of most-used accounts and graphics about their status.
-    """
-    
-    template_name = 'accounts/dash.hamlpy'
+class LoginRequiredMixin():
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(LoginRequiredMixin, self).dispatch(*args, **kwargs)

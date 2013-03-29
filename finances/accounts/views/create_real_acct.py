@@ -16,16 +16,17 @@
 from django import forms
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.edit import BaseFormView
+from django.views.generic.base import TemplateView
 
-from shared.views import FinancesBaseView
 from shared.models import CHARFIELD_MAX_LENGTH, RealAcct
+from shared.views.mixins.login_required import LoginRequiredMixin
 
 
 class RealAcctForm(forms.Form):
     name = forms.CharField(max_length=CHARFIELD_MAX_LENGTH)
 
 
-class AccountsCreateRealAcct(BaseFormView, FinancesBaseView):
+class AccountsCreateRealAcct(BaseFormView, LoginRequiredMixin, TemplateView):
     """
     Create a new RealAcct.
     """
