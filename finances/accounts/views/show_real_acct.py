@@ -13,14 +13,20 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.conf.urls import patterns, url
-from accounts.views import AccountsDashboard
-from accounts.views import AccountsCreateRealAcct
-from accounts.views import AccountsShowRealAcct
+from django.views.generic.base import TemplateView
+from django.views.generic.detail import BaseDetailView
 
-urlpatterns = patterns('',
-    # accounts dashboard page
-    url(r'^index/$', AccountsDashboard.as_view(), name='index'),
-    url(r'^create/$', AccountsCreateRealAcct.as_view(), name='create'),
-    url(r'^(?P<pk>\d+)/$', AccountsShowRealAcct.as_view(), name='real-detail'),
-)
+from shared.views.mixins.login_required import LoginRequiredMixin
+from shared.models import RealAcct
+
+
+class AccountsShowRealAcct(BaseDetailView, LoginRequiredMixin, TemplateView):
+    """
+    View the transactions listed against a RealAcct.
+    """
+    context_object_name = 'real_acct'
+    template_name = 'accounts/show_real_acct.hamlpy'
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.queryset = RealAcct.objects.filter(_owner=request.user.id)
+        return super(AccountsShowRealAcct, self).dispatch(request, *args, **kwargs)
