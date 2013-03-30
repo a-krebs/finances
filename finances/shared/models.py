@@ -1,15 +1,15 @@
 # Copyright (C) 2012  Aaron Krebs akrebs@ualberta.ca
-# 
+
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
@@ -32,7 +32,7 @@ class OwnedModel(models.Model):
     class Meta:
         abstract = True
     
-    def __unicode__(self) :
+    def __unicode__(self):
         # this is an abstract model, so this method should be overridden later
         raise NotImplementedError()
     
@@ -41,7 +41,7 @@ class OwnedModel(models.Model):
         """
         Returns the User object of this Account's owner.
         """
-        return self._owner 
+        return self._owner
     
     @owner.setter
     def owner(self, owner):
@@ -193,17 +193,17 @@ class Year(PeriodLength):
         raise NotImplementedError()
     
     @property
-    def current_period_end_date (self) :
+    def current_period_end_date(self):
         """
         Returns the end date of the current period (inclusive).
         Uses the @property decorator.
         """
         raise NotImplementedError()
     
-    def in_current_period (self, timezone_date) :
+    def in_current_period(self, timezone_date):
         """
         Returns True if the given timezone_date is in the current period, otherwise returns False
-        """ 
+        """
         raise NotImplementedError()
 
 
@@ -216,7 +216,7 @@ class Budget(NamedModel, OwnedModel):
     with said Category are counted against the budget.
     """
     
-    _period_budget_amount = models.DecimalField(max_digits = 15, decimal_places = 2)
+    _period_budget_amount = models.DecimalField(max_digits=15, decimal_places=2)
     _period_length = models.ForeignKey(PeriodLength)
     
     def __unicode__(self):
@@ -269,18 +269,18 @@ class Category(NamedModel, OwnedModel):
     
     _budget = models.ForeignKey(Budget)
     
-    def __unicode__ (self) :
+    def __unicode__(self):
         return self.owner.user.username + "'s Category: " + self.name
     
     @property
-    def budget (self) :
+    def budget(self):
         """
         Returns the Budget object that this Category is under.
         """
         return self._budget
     
     @budget.setter
-    def budget (self, budget) :
+    def budget(self, budget):
         """
         Sets the Budget object that this Category is under.
         """
@@ -337,7 +337,6 @@ class VirtualAcct(OwnedModel, NamedModel):
                 raise FieldError('_parent_budget is already set and cannot be set again')
         except RealAcct.DoesNotExist:
             self._parent_budget = budget
-        
     
     @parent_budget.setter
     def parent_budget(self, budget):
@@ -380,7 +379,7 @@ class RealTxn(OwnedModel):
     """
     
     _real_account = models.ForeignKey(RealAcct)
-    _value = models.DecimalField(max_digits = 15, decimal_places = 2)
+    _value = models.DecimalField(max_digits=15, decimal_places=2)
     _category = models.ForeignKey(Category)
     
     def __unicode__(self):
@@ -459,7 +458,7 @@ class VirtualTxn(OwnedModel):
     """
     
     _virtual_acct = models.ForeignKey(VirtualAcct)
-    _value = models.DecimalField(max_digits = 15, decimal_places = 2)
+    _value = models.DecimalField(max_digits=15, decimal_places=2)
     _real_txn = models.ForeignKey(RealTxn)
     
     def __unicode__(self):

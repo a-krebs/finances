@@ -1,4 +1,4 @@
-# Copyright (C) 2012  Aaron Krebs akrebs@ualberta.ca
+# Copyright (C) 2013  Aaron Krebs akrebs@ualberta.ca
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,24 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.contrib import admin
+from shared.models import RealAcct
 
-from shared.models import (
-            Budget,
-            Category,
-            RealAcct,
-            VirtualAcct,
-            RealTxn,
-            VirtualTxn,
-            Month,
-            Year,
+
+class RealAcctListMixin(object):
+    """
+    Add a list of the user's RealAccts to context
+    """
+    
+    def get_context_data(self, **kwargs):
+        context = {
+            'realacct_list': RealAcct.objects.filter(
+                _owner=self.request.user
             )
-
-admin.site.register(Budget)
-admin.site.register(Category)
-admin.site.register(RealAcct)
-admin.site.register(VirtualAcct)
-admin.site.register(RealTxn)
-admin.site.register(VirtualTxn)
-admin.site.register(Month)
-admin.site.register(Year)
+        }
+        context.update(super(RealAcctListMixin, self).get_context_data(**kwargs))
+        return context

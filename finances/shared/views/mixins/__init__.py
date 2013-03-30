@@ -13,24 +13,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.contrib import admin
-
-from shared.models import (
-            Budget,
-            Category,
-            RealAcct,
-            VirtualAcct,
-            RealTxn,
-            VirtualTxn,
-            Month,
-            Year,
-            )
-
-admin.site.register(Budget)
-admin.site.register(Category)
-admin.site.register(RealAcct)
-admin.site.register(VirtualAcct)
-admin.site.register(RealTxn)
-admin.site.register(VirtualTxn)
-admin.site.register(Month)
-admin.site.register(Year)
+from login_required import LoginRequiredMixin

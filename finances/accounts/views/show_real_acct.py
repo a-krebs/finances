@@ -1,4 +1,4 @@
-# Copyright (C) 2012  Aaron Krebs akrebs@ualberta.ca
+# Copyright (C) 2013  Aaron Krebs akrebs@ualberta.ca
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,24 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.contrib import admin
+from django.views.generic.base import TemplateView
 
-from shared.models import (
-            Budget,
-            Category,
-            RealAcct,
-            VirtualAcct,
-            RealTxn,
-            VirtualTxn,
-            Month,
-            Year,
-            )
+from shared.views.mixins import LoginRequiredMixin
 
-admin.site.register(Budget)
-admin.site.register(Category)
-admin.site.register(RealAcct)
-admin.site.register(VirtualAcct)
-admin.site.register(RealTxn)
-admin.site.register(VirtualTxn)
-admin.site.register(Month)
-admin.site.register(Year)
+from accounts.views.mixins import RealTxnListForRealAcctMixin
+
+
+class AccountsShowRealAcct(RealTxnListForRealAcctMixin, LoginRequiredMixin, TemplateView):
+    """
+    View the transactions listed against a RealAcct.
+    """
+    template_name = 'accounts/show_real_acct.hamlpy'
