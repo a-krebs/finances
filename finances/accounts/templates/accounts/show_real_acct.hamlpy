@@ -33,3 +33,6 @@
 				%td.value
 					BALANCE HERE
 	#transactions-list
+		-for txn in txns
+			.txn
+				= txn

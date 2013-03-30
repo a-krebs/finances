@@ -30,3 +30,9 @@ class AccountsShowRealAcct(BaseDetailView, LoginRequiredMixin, TemplateView):
     def dispatch(self, request, *args, **kwargs):
         self.queryset = RealAcct.objects.filter(_owner=request.user.id)
         return super(AccountsShowRealAcct, self).dispatch(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        return super(AccountsShowRealAcct, self).get_context_data(
+            txns=self.object.realtxn_set.all(),
+            **kwargs
+        )
