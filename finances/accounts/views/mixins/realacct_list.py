@@ -13,15 +13,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from django.views.generic.base import TemplateView
-
-from shared.views.mixins import LoginRequiredMixin
-
-from accounts.views.mixins import RealTxnListForRealAcctMixin
+from shared.models import RealAcct
 
 
-class AccountsShowRealAcct(RealTxnListForRealAcctMixin, LoginRequiredMixin, TemplateView):
+class RealAcctListMixin(object):
     """
-    View the transactions listed against a RealAcct.
+    Add a list of the user's RealAccts to context
     """
-    template_name = 'accounts/show_real_acct.hamlpy'
+    
+    def get_context_data(self, **kwargs):
+        context = {
+            'realacct_list': RealAcct.objects.filter(
+                _owner=self.request.user
+            )
+        }
+        context.update(super(RealAcctListMixin, self).get_context_data(**kwargs))
+        return context

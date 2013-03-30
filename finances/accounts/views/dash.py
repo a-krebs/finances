@@ -15,12 +15,14 @@
 
 from django.views.generic.base import TemplateView
 
-from shared.views.mixins.login_required import LoginRequiredMixin
+from shared.views.mixins import LoginRequiredMixin
+
+from accounts.views.mixins import RealAcctListMixin
 
 
-class AccountsDashboard(LoginRequiredMixin, TemplateView):
+class AccountsDashboard(RealAcctListMixin, LoginRequiredMixin, TemplateView):
     """
-    Show a listing of most-used accounts and graphics about their status.
+    Show a listing of accounts and graphics about their status.
     """
     
     template_name = 'accounts/dash.hamlpy'

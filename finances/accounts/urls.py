@@ -22,5 +22,5 @@ urlpatterns = patterns('',
     # accounts dashboard page
     url(r'^index/$', AccountsDashboard.as_view(), name='index'),
     url(r'^create/$', AccountsCreateRealAcct.as_view(), name='create'),
-    url(r'^(?P<pk>\d+)/$', AccountsShowRealAcct.as_view(), name='real-detail'),
+    url(r'^(?P<realacct_pk>\d+)/$', AccountsShowRealAcct.as_view(), name='real-detail'),
 )

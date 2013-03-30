@@ -26,13 +26,13 @@
 				%td.label
 					Name:
 				%td.value
-					= real_acct.name
+					= realacct.name
 			%tr
 				%td.label
 					Balance:
 				%td.value
 					BALANCE HERE
 	#transactions-list
-		-for txn in txns
+		-for txn in realtxn_list
 			.txn
 				= txn
