@@ -17,6 +17,12 @@ WEEK_PERIOD = 10
 MONTH_PERIOD = 20
 YEAR_PERIOD = 30
 
+PERIOD_LENGTH_CHOICES = (
+    (WEEK_PERIOD, 'Weekly'),
+    (MONTH_PERIOD, 'Monthly'),
+    (YEAR_PERIOD, 'Yearly')
+)
+
 
 class PeriodLengthFactory(object):
     """
