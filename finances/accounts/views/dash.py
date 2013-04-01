@@ -20,7 +20,7 @@ from shared.views.mixins import LoginRequiredMixin
 from accounts.views.mixins import RealAcctListMixin
 
 
-class AccountsDashboard(RealAcctListMixin, LoginRequiredMixin, TemplateView):
+class Dashboard(RealAcctListMixin, LoginRequiredMixin, TemplateView):
     """
     Show a listing of accounts and graphics about their status.
     """

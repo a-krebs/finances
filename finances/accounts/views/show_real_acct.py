@@ -20,7 +20,7 @@ from shared.views.mixins import LoginRequiredMixin
 from accounts.views.mixins import RealTxnListForRealAcctMixin
 
 
-class AccountsShowRealAcct(RealTxnListForRealAcctMixin, LoginRequiredMixin, TemplateView):
+class ShowRealAcct(RealTxnListForRealAcctMixin, LoginRequiredMixin, TemplateView):
     """
     View the transactions listed against a RealAcct.
     """

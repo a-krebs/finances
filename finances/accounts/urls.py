@@ -14,13 +14,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from django.conf.urls import patterns, url
-from accounts.views import AccountsDashboard
-from accounts.views import AccountsCreateRealAcct
-from accounts.views import AccountsShowRealAcct
+from accounts.views import Dashboard
+from accounts.views import CreateRealAcct
+from accounts.views import ShowRealAcct
 
 urlpatterns = patterns('',
     # accounts dashboard page
-    url(r'^index/$', AccountsDashboard.as_view(), name='index'),
-    url(r'^create/$', AccountsCreateRealAcct.as_view(), name='create'),
-    url(r'^(?P<realacct_pk>\d+)/$', AccountsShowRealAcct.as_view(), name='real-detail'),
+    url(r'^index/$', Dashboard.as_view(), name='index'),
+    url(r'^create/$', CreateRealAcct.as_view(), name='create'),
+    url(r'^(?P<realacct_pk>\d+)/$', ShowRealAcct.as_view(), name='real-detail'),
 )

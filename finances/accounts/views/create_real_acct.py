@@ -26,7 +26,7 @@ class RealAcctForm(forms.Form):
     name = forms.CharField(max_length=CHARFIELD_MAX_LENGTH)
 
 
-class AccountsCreateRealAcct(BaseFormView, LoginRequiredMixin, TemplateView):
+class CreateRealAcct(BaseFormView, LoginRequiredMixin, TemplateView):
     """
     Create a new RealAcct.
     """
@@ -40,4 +40,4 @@ class AccountsCreateRealAcct(BaseFormView, LoginRequiredMixin, TemplateView):
             owner=self.request.user,
             name=form.cleaned_data['name']
             )
-        return super(AccountsCreateRealAcct, self).form_valid(form)
+        return super(CreateRealAcct, self).form_valid(form)
