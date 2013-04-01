@@ -26,7 +26,7 @@ class RealTxnListForRealAcctMixin(object):
     
     def get_context_data(self, **kwargs):
         realacct_pk = self.kwargs.get('realacct_pk', None)
-
+        
         if realacct_pk is None:
             raise AttributeError(u"Detail mixin %s must be called with "
                                  u"an object pk." % self.__class__.__name__)
@@ -38,7 +38,7 @@ class RealTxnListForRealAcctMixin(object):
         except ObjectDoesNotExist:
             raise Http404(u"No %(verbose_name)s found matching the query" %
                           {'verbose_name': RealAcct._meta.verbose_name})  # @UndefinedVariable
-
+        
         context = {
             'realacct': realacct,
             'realtxn_list': realacct.realtxn_set.all(),
