@@ -169,6 +169,7 @@ INSTALLED_APPS = (
     # shared components, mostly models
     'shared',
     'accounts',
+    'budgets',
 )
 
 # django-registration settings
