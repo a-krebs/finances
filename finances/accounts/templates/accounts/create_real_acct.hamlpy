@@ -31,4 +31,3 @@
 					= form.name.errors
 		
 			%input{type : "submit", value : "Create" }
-			%input{type : "hidden", name : "next", value : "={ next }" }
