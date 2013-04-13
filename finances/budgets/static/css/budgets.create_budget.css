@@ -3,6 +3,10 @@
   text-align: center;
 }
 /* line 21, ../sass/_forms.sass */
+#content form fieldset ol {
+  padding: 0;
+}
+/* line 23, ../sass/_forms.sass */
 #content form fieldset label {
   display: -moz-inline-stack;
   display: inline-block;
@@ -12,7 +16,7 @@
   *display: inline;
   width: 200px;
 }
-/* line 24, ../sass/_forms.sass */
+/* line 26, ../sass/_forms.sass */
 #content form fieldset li {
   list-style: none;
   padding: 5px;

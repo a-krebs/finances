@@ -15,11 +15,9 @@
 
 from django.conf.urls import patterns, url
 
-from budgets.views import CreateBudget
+from budgets.views import CreateBudget, ManageCategories
 
 urlpatterns = patterns('',
-    # accounts dashboard page
-#    url(r'^index/$', AccountsDashboard.as_view(), name='index'),
     url(r'^create/$', CreateBudget.as_view(), name='create'),
-#    url(r'^(?P<realacct_pk>\d+)/$', AccountsShowRealAcct.as_view(), name='real-detail'),
+    url(r'^categories/$', ManageCategories.as_view(), name='categories'),
 )

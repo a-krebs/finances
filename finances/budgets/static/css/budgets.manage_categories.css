@@ -21,3 +21,8 @@
   list-style: none;
   padding: 5px;
 }
+
+/* line 20, ../sass/budgets.manage_categories.sass */
+#content form fieldset label {
+  width: 150px;
+}
