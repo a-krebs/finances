@@ -75,7 +75,7 @@ class Budget(NamedModel, OwnedModel):
         self.period_length_controller = PeriodLengthFactory(self.period_length).make_controller()
     
     def __unicode__(self):
-        return self.owner.user.username + "'s Budget: " + self.name
+        return self.name
         
     @property
     def current_account(self):
@@ -116,7 +116,7 @@ class Category(NamedModel, OwnedModel):
     budget = models.ForeignKey(Budget)
     
     def __unicode__(self):
-        return self.owner.user.username + "'s Category: " + self.name
+        return self.name
 
 
 class RealAcct(OwnedModel, NamedModel):
@@ -127,7 +127,7 @@ class RealAcct(OwnedModel, NamedModel):
     """
     
     def __unicode__(self):
-        return self.owner.user.username + "'s RealAcct " + self.name
+        return self.name
     
     @property
     def balance(self):
@@ -148,7 +148,7 @@ class VirtualAcct(OwnedModel, NamedModel):
     real_acct = models.ForeignKey(RealAcct)
     
     def __unicode__(self):
-        return self.owner.user.username + "'s VirtualAcct " + self.name
+        return self.name
     
     @property
     def balance(self):
@@ -172,7 +172,7 @@ class RealTxn(OwnedModel):
     category = models.ForeignKey(Category)
     
     def __unicode__(self):
-        return self.owner.username.name + "'s RealTxn " + self.name
+        return self.name
 
 
 class VirtualTxn(OwnedModel):
@@ -188,4 +188,4 @@ class VirtualTxn(OwnedModel):
     real_txn = models.ForeignKey(RealTxn)
     
     def __unicode__(self):
-        return self.owner.user.username + "'s VirtualTxn " + self.name
+        return self.name
