@@ -17,19 +17,25 @@
 -extends 'shared/site_base.hamlpy'
 
 -block links
-	%link{'rel' : 'stylesheet', 'type ' : 'text/css', 'href' : '={ STATIC_URL }css/password_change_form.css'}
+	%link{'rel' : 'stylesheet', 'type ' : 'text/css', 'href' : '={ STATIC_URL }css/budgets.create_budget.css'}
 
 -block content
-	
-	%form{'action' : "{% url registration:auth_password_change %}", 'method' : 'post' }
+	%form{'action' : "{% url budgets:create %}", 'method' : 'post' }
 		-csrf_token
 		
 		%fieldset
-			-for field in form
-				%ol
-					%li
-						= field.label_tag
-						= field
-						= field.errors
+			%ol
+				%li
+					= form.name.label_tag
+					= form.name
+					= form.name.errors
+				%li
+					= form.amount.label_tag
+					= form.amount
+					= form.amount.errors
+				%li
+					= form.period.label_tag
+					= form.period
+					= form.period.errors
 			
-			%input{type : "submit", value : "Change Password" }
+			%input{type : "submit", value : "Create" }

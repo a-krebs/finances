@@ -13,6 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from dash import AccountsDashboard
-from create_real_acct import AccountsCreateRealAcct
-from show_real_acct import AccountsShowRealAcct
+from dash import Dashboard
+from create_real_acct import CreateRealAcct
+from show_real_acct import ShowRealAcct

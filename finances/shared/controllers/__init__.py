@@ -13,4 +13,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from period_length import PeriodLengthFactory, WEEK_PERIOD, MONTH_PERIOD, YEAR_PERIOD
+from period_length import (
+    PeriodLengthFactory,
+    WEEK_PERIOD,
+    MONTH_PERIOD,
+    YEAR_PERIOD,
+    PERIOD_LENGTH_CHOICES,
+)

@@ -22,8 +22,6 @@ from shared.models import (
             VirtualAcct,
             RealTxn,
             VirtualTxn,
-            Month,
-            Year,
             )
 
 admin.site.register(Budget)
@@ -32,5 +30,3 @@ admin.site.register(RealAcct)
 admin.site.register(VirtualAcct)
 admin.site.register(RealTxn)
 admin.site.register(VirtualTxn)
-admin.site.register(Month)
-admin.site.register(Year)

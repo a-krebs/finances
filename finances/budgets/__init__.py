@@ -12,15 +12,3 @@
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-from django.conf.urls import patterns, url
-from accounts.views import Dashboard
-from accounts.views import CreateRealAcct
-from accounts.views import ShowRealAcct
-
-urlpatterns = patterns('',
-    # accounts dashboard page
-    url(r'^index/$', Dashboard.as_view(), name='index'),
-    url(r'^create/$', CreateRealAcct.as_view(), name='create'),
-    url(r'^(?P<realacct_pk>\d+)/$', ShowRealAcct.as_view(), name='real-detail'),
-)

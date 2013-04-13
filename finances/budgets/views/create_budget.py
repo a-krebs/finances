@@ -14,30 +14,34 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 from django import forms
-from django.core.urlresolvers import reverse_lazy
 from django.views.generic.edit import BaseFormView
 from django.views.generic.base import TemplateView
+from django.core.urlresolvers import reverse_lazy
 
-from shared.models import CHARFIELD_MAX_LENGTH, RealAcct
-from shared.views.mixins.login_required import LoginRequiredMixin
+from shared.views.mixins import LoginRequiredMixin
+from shared.controllers import PERIOD_LENGTH_CHOICES
+from shared.models import CHARFIELD_MAX_LENGTH, Budget
 
 
-class RealAcctForm(forms.Form):
+class BudgetForm(forms.Form):
     name = forms.CharField(max_length=CHARFIELD_MAX_LENGTH)
+    amount = forms.DecimalField(decimal_places=2)
+    period = forms.ChoiceField(PERIOD_LENGTH_CHOICES)
 
 
-class CreateRealAcct(BaseFormView, LoginRequiredMixin, TemplateView):
+class CreateBudget(BaseFormView, LoginRequiredMixin, TemplateView):
     """
-    Create a new RealAcct.
+    Create a new Budget.
     """
-    
-    template_name = 'accounts/create_real_acct.hamlpy'
-    form_class = RealAcctForm
-    success_url = reverse_lazy('accounts:index')
+    template_name = 'budgets/create_budget.hamlpy'
+    form_class = BudgetForm
+    success_url = reverse_lazy('budgets:create')
     
     def form_valid(self, form):
-        RealAcct.objects.create(
+        Budget.objects.create(
             owner=self.request.user,
-            name=form.cleaned_data['name']
-            )
-        return super(CreateRealAcct, self).form_valid(form)
+            name=form.cleaned_data['name'],
+            period_budget_amount=form.cleaned_data['amount'],
+            period_length=form.cleaned_data['period']
+        )
+        return super(CreateBudget, self).form_valid(form)
