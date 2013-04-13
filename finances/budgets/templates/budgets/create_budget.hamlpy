@@ -26,15 +26,15 @@
 		%fieldset
 			%ol
 				%li
-					= form.name.label
+					= form.name.label_tag
 					= form.name
 					= form.name.errors
 				%li
-					= form.amount.label
+					= form.amount.label_tag
 					= form.amount
 					= form.amount.errors
 				%li
-					= form.period.label
+					= form.period.label_tag
 					= form.period
 					= form.period.errors
 			

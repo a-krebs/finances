@@ -40,21 +40,47 @@ class PeriodLengthFactory(object):
         Returns True if the given timezone_date is in the current period, otherwise returns False
     """
     def __init__(self, length, *args, **kwargs):
-        self.length = length
+        self.length = int(length)
         super(PeriodLengthFactory, self).__init__(*args, **kwargs)
     
     def make_controller(self):
         if self.length == WEEK_PERIOD:
-            raise NotImplementedError()
+            return WeekPeriodController()
         elif self.length == MONTH_PERIOD:
             return MonthPeriodController()
         elif self.length == YEAR_PERIOD:
-            raise NotImplementedError()
+            return YearPeriodController()
         else:
             raise NotImplementedError()
 
 
+class WeekPeriodController(object):
+    @property
+    def current_period_start_date(self):
+        raise NotImplementedError()
+    
+    @property
+    def current_period_end_date(self):
+        raise NotImplementedError()
+    
+    def in_current_period(self, timezone_date):
+        raise NotImplementedError()
+
+
 class MonthPeriodController(object):
+    @property
+    def current_period_start_date(self):
+        raise NotImplementedError()
+    
+    @property
+    def current_period_end_date(self):
+        raise NotImplementedError()
+    
+    def in_current_period(self, timezone_date):
+        raise NotImplementedError()
+
+
+class YearPeriodController(object):
     @property
     def current_period_start_date(self):
         raise NotImplementedError()
