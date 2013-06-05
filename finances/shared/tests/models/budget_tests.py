@@ -15,27 +15,10 @@
 
 from django.contrib.auth.models import User
 from django.test import TestCase
-from shared.models import Budget, Year
+from shared.models import Budget
 
 
 class BudgetTests(TestCase):
-    """
-    On the Budget model, only current_account() really needs to be tested.
-    """
-    
     def test_current_account(self):
         # TODO once I figure out how this should work
         pass
-    
-    def test_periodlength_inheritance(self):
-        """
-        See if having PeriodLength as not abstract will call PeriodLength
-        methods or subclass methods
-        """
-        user = User.objects.create(username = 'testuser', email = 'email@domain.tld')
-        budget = Budget(owner = user, period_budget_amount = '100.00')
-        year = Year.objects.create()
-        budget.period_length = year
-        budget.save()
-        length = budget.period_length
-        assert(length.__unicode__() == 'Year PeriodLength')
