@@ -33,7 +33,7 @@ class RealTxnListForRealAcctMixin(object):
         try:
             realacct = RealAcct.objects.get(
                 pk=realacct_pk,
-                _owner=self.request.user
+                owner=self.request.user
             )
         except ObjectDoesNotExist:
             raise Http404(u"No %(verbose_name)s found matching the query" %
