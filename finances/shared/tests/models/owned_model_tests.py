@@ -16,7 +16,6 @@
 from django.test import TestCase
 from django.test.client import RequestFactory
 from django.contrib.auth.models import User
-from django.core.exceptions import FieldError
 from shared.models import OwnedModel
 
 
@@ -31,19 +30,6 @@ class OwnedModelTests(TestCase):
         self.user = User(username='test_user', password='pass')
         self.instance = OwnedModelTestModel(owner=self.user)
     
-    def test_owner_protection(self):
-        """
-        OwnerProfile's owner field should only be set once.
-        """
-        assert(self.instance.owner == self.user)
-        
-        try:
-            self.instance.owner = self.user
-        except FieldError:
-            assert(True)
-            return
-        assert(False)
-        
     def test_is_allowed(self):
         factory = RequestFactory()
         request = factory.get('/')
