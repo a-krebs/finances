@@ -28,8 +28,8 @@ class OwnedModelTestModel(OwnedModel):
 
 class OwnedModelTests(TestCase):
     def setUp(self):
-        self.user = User(username = 'test_user', password = 'pass')
-        self.instance = OwnedModelTestModel(owner = self.user)
+        self.user = User(username='test_user', password='pass')
+        self.instance = OwnedModelTestModel(owner=self.user)
     
     def test_owner_protection(self):
         """
