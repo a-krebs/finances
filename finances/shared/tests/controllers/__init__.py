@@ -1,4 +1,4 @@
-# Copyright (C) 2012  Aaron Krebs akrebs@ualberta.ca
+# Copyright (C) 2013 Aaron Krebs akrebs@ualberta.ca
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,7 +13,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-from owned_model_tests import OwnedModelTests
-from budget_tests import BudgetTests
-from virtual_acct_tests import VirtualAcctTests
-from real_acct_tests import RealAcctTests
+from period_length_tests import PeriodLengthTests
