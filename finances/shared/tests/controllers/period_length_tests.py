@@ -60,21 +60,37 @@ class PeriodLengthTests(TestCase):
         self.next_week = self.week_beginning + timezone.timedelta(weeks=1)
         self.previous_week = self.week_beginning - timezone.timedelta(weeks=1)
         self.month_beginning = timezone.datetime(self.today_start.year, self.today_start.month, 1)
+        self.month_beginning = timezone.make_aware(self.month_beginning, timezone.get_current_timezone())
         self.month_end = timezone.datetime(self.today_start.year, self.today_start.month, monthrange(self.today_start.year, self.today_start.month)[1])
+        self.month_end = timezone.make_aware(self.month_end, timezone.get_current_timezone())
         # account for Jan and Dec in month testing
         if self.today_start.month == 12:
             self.next_month = timezone.datetime(self.today_start.year, 1, 1)
         else:
             self.next_month = timezone.datetime(self.today_start.year, self.today_start.month + 1, 1)
+        self.next_month = timezone.make_aware(self.next_month, timezone.get_current_timezone())
         if self.today_start.month == 1:
             self.previous_month = timezone.datetime(self.today_start.year - 1, 12, 1)
         else:
             self.previous_month = timezone.datetime(self.today_start.year, self.today_start.month - 1, 1)
+        self.previous_month = timezone.make_aware(self.previous_month, timezone.get_current_timezone())
         
-        self.year_beginning = timezone.datetime(self.today_start.year, 1, 1)
-        self.year_end = timezone.datetime(self.today_start.year, 12, 31)
-        self.next_year = timezone.datetime(self.today_start.year + 1, self.today_start.month, 1)
-        self.previous_year = timezone.datetime(self.today_start.year - 1, self.today_start.month, 1)
+        self.year_beginning = timezone.make_aware(
+            timezone.datetime(self.today_start.year, 1, 1),
+            timezone.get_current_timezone()
+        )
+        self.year_end = timezone.make_aware(
+            timezone.datetime(self.today_start.year, 12, 31),
+           timezone.get_current_timezone()
+        )
+        self.next_year = timezone.make_aware(
+            timezone.datetime(self.today_start.year + 1, self.today_start.month, 1),
+           timezone.get_current_timezone()
+        )
+        self.previous_year = timezone.make_aware(
+            timezone.datetime(self.today_start.year - 1, self.today_start.month, 1),
+           timezone.get_current_timezone()
+        )
     
     def test_make_controller(self):
         """

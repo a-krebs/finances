@@ -1,6 +1,4 @@
 # Copyright (C) 2013  Aaron Krebs akrebs@ualberta.ca
-from django.utils import timezone
-from django.conf import settings
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,6 +12,12 @@ from django.conf import settings
 
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+from calendar import monthrange
+
+from django.utils import timezone
+from django.conf import settings
+
 
 WEEK_PERIOD = 10
 MONTH_PERIOD = 20
@@ -110,7 +114,10 @@ class PeriodControllerBase(object):
         """
         Returns True if the given timezone_date is in the current period, otherwise returns False
         """
-        raise NotImplementedError()
+        if timezone_date >= self.get_start_date_for_period(self.local_today)\
+            and timezone_date <= self.get_end_date_for_period(self.local_today):
+                return True
+        return False
 
 
 class WeekPeriodController(PeriodControllerBase):
@@ -139,15 +146,6 @@ class WeekPeriodController(PeriodControllerBase):
         return self.get_start_date_for_period(timezone_date)\
             + timezone.timedelta(days=7)\
             - timezone.timedelta(microseconds=1)
-    
-    def in_current_period(self, timezone_date):
-        """
-        Returns True if the given timezone_date is in the current period, otherwise returns False
-        """
-        if timezone_date >= self.get_start_date_for_period(self.local_today)\
-            and timezone_date <= self.get_end_date_for_period(self.local_today):
-                return True
-        return False
 
 
 class MonthPeriodController(PeriodControllerBase):
@@ -155,19 +153,31 @@ class MonthPeriodController(PeriodControllerBase):
         """
         Returns the start date for the period in which timezone_date resides.
         """
-        raise NotImplementedError()
+        return timezone.localtime(
+            timezone.make_aware(
+                timezone.datetime(
+                    day=1,
+                    month=timezone_date.month,
+                    year=timezone_date.year,
+                ),
+                timezone.get_current_timezone(),
+            )
+        )
     
     def get_end_date_for_period(self, timezone_date):
         """
         Returns the end date for the period in which timezone_date resides.
         """
-        raise NotImplementedError()
-    
-    def in_current_period(self, timezone_date):
-        """
-        Returns True if the given timezone_date is in the current period, otherwise returns False
-        """
-        raise NotImplementedError()
+        return timezone.localtime(
+            timezone.make_aware(
+                timezone.datetime(
+                    day=monthrange(timezone_date.year, timezone_date.month)[1],
+                    month=timezone_date.month,
+                    year=timezone_date.year,
+                ),
+                timezone.get_current_timezone()
+            )
+        )
 
 
 class YearPeriodController(PeriodControllerBase):
@@ -175,16 +185,28 @@ class YearPeriodController(PeriodControllerBase):
         """
         Returns the start date for the period in which timezone_date resides.
         """
-        raise NotImplementedError()
+        return timezone.localtime(
+            timezone.make_aware(
+                timezone.datetime(
+                    day=1,
+                    month=1,
+                    year=timezone_date.year,
+                ),
+                timezone.get_current_timezone()
+            )
+        )
     
     def get_end_date_for_period(self, timezone_date):
         """
         Returns the end date for the period in which timezone_date resides.
         """
-        raise NotImplementedError()
-    
-    def in_current_period(self, timezone_date):
-        """
-        Returns True if the given timezone_date is in the current period, otherwise returns False
-        """
-        raise NotImplementedError()
+        return timezone.localtime(
+            timezone.make_aware(
+                timezone.datetime(
+                    day=31,
+                    month=12,
+                    year=timezone_date.year,
+                ),
+                timezone.get_current_timezone()
+            )
+        )
