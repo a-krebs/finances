@@ -63,8 +63,7 @@ class PeriodLengthTests(TestCase):
         self.month_beginning = timezone.make_aware(self.month_beginning, timezone.get_current_timezone())
         self.month_end = timezone.datetime(self.today_start.year, self.today_start.month, monthrange(self.today_start.year, self.today_start.month)[1])
         self.month_end = timezone.make_aware(self.month_end, timezone.get_current_timezone())
-        # account for Jan and Dec in month testing
-        if self.today_start.month == 12:
+        if self.today_start.month == 12:    # account for Jan and Dec in month testing
             self.next_month = timezone.datetime(self.today_start.year, 1, 1)
         else:
             self.next_month = timezone.datetime(self.today_start.year, self.today_start.month + 1, 1)
@@ -100,11 +99,21 @@ class PeriodLengthTests(TestCase):
         correct type is returned and there isn't a strange case after a few calls
         to the factory.
         """
+        instances = set()
         A = lambda returned_type, check_type: self.assertTrue(isinstance(returned_type, check_type))
         for _ in xrange(0, int(1000 * random.random())):
-            A(self.week.make_controller(), WeekPeriodController)
-            A(self.month.make_controller(), MonthPeriodController)
-            A(self.year.make_controller(), YearPeriodController)
+            week = self.week.make_controller()
+            month = self.month.make_controller()
+            year = self.year.make_controller()
+            self.assertTrue(week not in instances)
+            self.assertTrue(month not in instances)
+            self.assertTrue(year not in instances)
+            instances.add(week)
+            instances.add(month)
+            instances.add(year)
+            A(week, WeekPeriodController)
+            A(month, MonthPeriodController)
+            A(year, YearPeriodController)
         
     def test_current_period_start_date(self):
         """
