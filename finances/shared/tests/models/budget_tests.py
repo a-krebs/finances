@@ -19,6 +19,19 @@ from shared.models import Budget
 
 
 class BudgetTests(TestCase):
+    """
+    Tests for parts of Budget that are not related to period length (as
+    those have their own controllers and thus their own tests).
+    """
+    
+    def setUp(self):
+        user = User.objects.create(username='testuser', email='email@domain.tld')
+        self.budget = Budget.objects.create(period_budget_amount=10.00,owner=user)
+        
+    
     def test_current_account(self):
         # TODO once I figure out how this should work
+        pass
+    
+    def test_account_for_date(self):
         pass

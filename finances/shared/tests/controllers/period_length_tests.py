@@ -162,10 +162,15 @@ class PeriodLengthTests(TestCase):
         self.assertFalse(self.year_controller.in_current_period(self.next_year))
         self.assertFalse(self.year_controller.in_current_period(self.previous_year))
 
-#    def test_week_start_date_for_period(self):
-#        T = lambda input_date, expected_return:\
-#            self.assertEqual(
-#                self.week_controller.get_start_date_for_period(input_date),
-#                expected_return
-#            )
-#        T()
+    def test_week_start_date_for_period(self):
+        T = lambda input_date, expected_return:\
+            self.assertEqual(
+                self.week_controller.get_start_date_for_period(input_date),
+                expected_return
+            )
+        # some arbitrary dates
+        mar_12_1998 = timezone.datetime(day=12, month=3, year=1998)
+        mar_12_1998 = timezone.make_aware(mar_12_1998, timezone.get_current_timezone())
+        mar_8_1998 = timezone.datetime(day=8, month=3, year=1998)
+        mar_8_1998 = timezone.make_aware(mar_8_1998, timezone.get_current_timezone())
+        T(mar_12_1998, mar_8_1998)
