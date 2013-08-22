@@ -15,6 +15,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from shared.controllers import PeriodLengthFactory, MONTH_PERIOD
 
@@ -77,13 +78,20 @@ class Budget(NamedModel, OwnedModel):
     def __unicode__(self):
         return self.name
         
+    def account_for_date(self, timezone_date):
+        """
+        Returns the VirtualAccount against which transactions on the given date
+        should be posted.
+        """
+        raise NotImplementedError()
+    
     @property
     def current_account(self):
         """
         Returns the VirtualAcct that should be used for this budget in the
         current period. Uses the @property decorator.
         """
-        raise NotImplementedError()
+        return self.account_for_date(timezone.now)
     
     @property
     def current_period_start_date(self):
