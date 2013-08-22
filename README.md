@@ -1,9 +1,15 @@
 finances
 ======
 
-This is small Django project I'm working on to do personal
+This project has been mothballed.
+
+Frankly, learning python and Django at the same time as
+developing this resulted in more refactoring of
+old poorly-written code than actual feature implementation.
+
+This was a small Django project to do personal
 small-scale bookkeeping and budgeting.
 
-The primary goal is to learn the Django framework (along with
+The primary goal was to learn the Django framework (along with
 css and javascript), and to add some additional features over
-the spreadsheet I currently use for managing my finances.
+the spreadsheet was using for managing my finances.
